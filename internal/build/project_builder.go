@@ -21,18 +21,52 @@ func NewProjectBuilder(projectName string) *ProjectBuilder {
 	}
 }
 
-func (p *ProjectBuilder) buildGitIgnore() error {
+type projectFileBuild struct {
+	fileName string
+	template []byte
+}
+
+func newGitIgnoreFileBuild() *projectFileBuild {
+	return &projectFileBuild{
+		fileName: constants.GitIgnoreFileName,
+		template: project.GitIgnoreTemplate,
+	}
+}
+
+func newREADMEFileBuild() *projectFileBuild {
+	return &projectFileBuild{
+		fileName: constants.READEMEFileName,
+		template: project.ReadmeTemplate,
+	}
+}
+
+func newMakefileFileBuild() *projectFileBuild {
+	return &projectFileBuild{
+		fileName: constants.MakefileFileName,
+		template: project.MakefileTemplate,
+	}
+}
+
+func getAllProjectFileBuild() []*projectFileBuild {
+	return []*projectFileBuild{
+		newGitIgnoreFileBuild(),
+		newREADMEFileBuild(),
+		newMakefileFileBuild(),
+	}
+}
+
+func (p *projectFileBuild) build(projectName string) error {
 	var (
 		err  error
 		tmpl *template.Template
 		file *os.File
 	)
 
-	if file, err = os.Create(filepath.Join(p.projectName, constants.GitIgnoreFileName)); err != nil {
+	if file, err = os.Create(filepath.Join(projectName, p.fileName)); err != nil {
 		return err
 	}
 
-	if tmpl, err = template.New(".gitignore").Parse(string(project.GitIgnoreTemplate)); err != nil {
+	if tmpl, err = template.New(p.fileName).Parse(string(p.template)); err != nil {
 		return err
 	}
 
@@ -48,8 +82,10 @@ func (p *ProjectBuilder) Build() error {
 		return err
 	}
 
-	if err = p.buildGitIgnore(); err != nil {
-		return err
+	for _, fileBuild := range getAllProjectFileBuild() {
+		if err = fileBuild.build(p.projectName); err != nil {
+			return err
+		}
 	}
 
 	return nil
