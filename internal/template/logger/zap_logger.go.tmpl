@@ -1,0 +1,150 @@
+package log
+
+import (
+	"os"
+
+	"github.com/natefinch/lumberjack"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
+
+var _ Logger = &ZapLogger{}
+
+type ZapLogger struct {
+	logger *zap.Logger
+}
+
+var (
+	highPriority = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel
+	})
+	lowPriority = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.ErrorLevel
+	})
+)
+
+func NewZapLogger(logPath *Path, options ...zap.Option) *ZapLogger {
+	zapCores := make([]zapcore.Core, 0, 4)
+	zapCores = append(zapCores, getConsoleStdOutZapCore())
+	zapCores = append(zapCores, getConsoleStdErrZapCore())
+	if !logPath.checkInfoPathIsEmpty() {
+		zapCores = append(zapCores, getFileInfoCore(logPath.InfoPath))
+	}
+	if !logPath.checkErrorPathIsEmpty() {
+		zapCores = append(zapCores, getFileErrorCore(logPath.ErrorPath))
+	}
+
+	logger := zap.New(
+		zapcore.NewTee(
+			zapCores...,
+		),
+		options...,
+	)
+
+	return &ZapLogger{
+		logger: logger,
+	}
+}
+
+func getConsoleStdOutZapCore() zapcore.Core {
+	return zapcore.NewCore(
+		getConsoleEncoder(),
+		zapcore.Lock(os.Stdout),
+		lowPriority,
+	)
+}
+
+func getConsoleStdErrZapCore() zapcore.Core {
+	return zapcore.NewCore(
+		getConsoleEncoder(),
+		zapcore.Lock(os.Stderr),
+		highPriority,
+	)
+}
+
+func getFileInfoCore(infoPath string) zapcore.Core {
+	return zapcore.NewCore(
+		getJSONEncoder(),
+		getLogWriteSyncer(infoPath),
+		lowPriority,
+	)
+}
+
+func getFileErrorCore(errorPath string) zapcore.Core {
+	return zapcore.NewCore(
+		getJSONEncoder(),
+		getLogWriteSyncer(errorPath),
+		highPriority,
+	)
+}
+
+func getLogWriteSyncer(logFilePath string) zapcore.WriteSyncer {
+
+	lumberJackLogger := &lumberjack.Logger{
+		Filename:   logFilePath,
+		MaxSize:    5,
+		MaxBackups: 5,
+		MaxAge:     30,
+		Compress:   true,
+	}
+
+	return zapcore.AddSync(lumberJackLogger)
+}
+
+func getJSONEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+
+	return zapcore.NewJSONEncoder(encoderConfig)
+}
+
+func getConsoleEncoder() zapcore.Encoder {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+
+	return zapcore.NewConsoleEncoder(encoderConfig)
+}
+
+func (l *ZapLogger) Logger() *zap.Logger {
+	return l.logger
+}
+
+func (l *ZapLogger) Debug(msg string, fields ...Field) {
+	l.logger.Debug(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Info(msg string, fields ...Field) {
+	l.logger.Info(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Warn(msg string, fields ...Field) {
+	l.logger.Warn(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Error(msg string, fields ...Field) {
+	l.logger.Error(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Fatal(msg string, fields ...Field) {
+	l.logger.Fatal(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Panic(msg string, fields ...Field) {
+	l.logger.Panic(msg, l.toZapFields(fields)...)
+}
+
+func (l *ZapLogger) Sync() error {
+	return l.logger.Sync()
+}
+
+func (l *ZapLogger) toZapFields(fields []Field) []zap.Field {
+	zapFields := make([]zap.Field, 0, len(fields))
+	for _, f := range fields {
+		zapFields = append(zapFields, zap.Any(f.Key, f.Value))
+	}
+	return zapFields
+}
