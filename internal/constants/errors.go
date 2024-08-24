@@ -9,4 +9,6 @@ var (
 
 	ErrProjectNameEmpty  = errors.New("project name cannot be empty")
 	ErrProjectNameExists = errors.New("project name already exists")
+
+	ErrModulePathEmpty = errors.New("module path cannot be empty")
 )

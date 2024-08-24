@@ -25,3 +25,11 @@ func CheckProjectName(projectName string) error {
 
 	return err
 }
+
+func CheckModulePath(modulePath string) error {
+	if modulePath == "" {
+		return constants.ErrModulePathEmpty
+	}
+
+	return nil
+}

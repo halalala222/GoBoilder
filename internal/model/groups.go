@@ -19,6 +19,14 @@ func newProjectNameInputGroup() *huh.Group {
 				return validation.CheckProjectName(s)
 			}).
 			Description(constants.ProjectNameDescription),
+		huh.NewInput().
+			Key(constants.ModulePathKey).
+			Title(constants.ModulePath).
+			Placeholder(constants.ModulePathPlaceholder).
+			Validate(func(s string) error {
+				return validation.CheckModulePath(s)
+			}).
+			Description(constants.ModulePathDescription),
 	)
 }
 

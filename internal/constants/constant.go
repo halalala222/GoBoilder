@@ -31,6 +31,11 @@ const (
 	ProjectNamePlaceholder = "my_project"
 	ProjectNameDescription = "This will be the name of your project"
 
+	ModulePathKey         = "module_path"
+	ModulePath            = "Enter module path"
+	ModulePathPlaceholder = "github.com/halalala222/my_project"
+	ModulePathDescription = "This will be the module path of your project"
+
 	ProjectLoggerPkgPath = "/pkg/log"
 
 	GitIgnoreFileName = ".gitignore"

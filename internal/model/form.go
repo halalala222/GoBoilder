@@ -11,12 +11,13 @@ import (
 	"github.com/halalala222/GoBoilder/internal/constants"
 )
 
-const maxWidth = 80
+const maxWidth = 85
 
 var (
 	red    = lipgloss.AdaptiveColor{Light: "#FE5F86", Dark: "#FE5F86"}
 	indigo = lipgloss.AdaptiveColor{Light: "#5A56E0", Dark: "#7571F9"}
 	green  = lipgloss.AdaptiveColor{Light: "#02BA84", Dark: "#02BF87"}
+	isQuit = false
 )
 
 type Styles struct {
@@ -70,7 +71,7 @@ func NewModel() Model {
 		newProjectNameInputGroup(),
 		newFormHuhGroup(),
 	).
-		WithWidth(45).
+		WithWidth(50).
 		WithShowHelp(false).
 		WithShowErrors(false)
 	return m
@@ -87,6 +88,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc", "ctrl+c", "q":
+			isQuit = true
 			return m, tea.Quit
 		}
 	}
@@ -106,6 +108,30 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, tea.Batch(cmds...)
+}
+
+func (m Model) currentProjectName(buildInfo string) string {
+	var (
+		projectName = m.form.GetString(constants.ProjectNameKey)
+	)
+
+	if projectName != "" {
+		return fmt.Sprintf("Project Name: %s\n", projectName)
+	}
+
+	return buildInfo
+}
+
+func (m Model) currentModulePath(buildInfo string) string {
+	var (
+		modulePath = m.form.GetString(constants.ModulePathKey)
+	)
+
+	if modulePath != "" {
+		return fmt.Sprintf("%sModule Path: %s\n", buildInfo, modulePath)
+	}
+
+	return buildInfo
 }
 
 func (m Model) currentLoggerBuildShow(buildInfo string) string {
@@ -132,18 +158,6 @@ func (m Model) currentHTTPFrameBuildShow(buildInfo string) string {
 	return buildInfo
 }
 
-func (m Model) currentProjectName(buildInfo string) string {
-	var (
-		projectName = m.form.GetString(constants.ProjectNameKey)
-	)
-
-	if projectName != "" {
-		return fmt.Sprintf("Project Name: %s\n", projectName)
-	}
-
-	return buildInfo
-}
-
 func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 	var (
 		buildInfo      = constants.NoneCurrentBuildInfo
@@ -152,6 +166,7 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 	)
 
 	buildInfo = m.currentProjectName(buildInfo)
+	buildInfo = m.currentModulePath(buildInfo)
 	buildInfo = m.currentLoggerBuildShow(buildInfo)
 	buildInfo = m.currentHTTPFrameBuildShow(buildInfo)
 
@@ -173,6 +188,7 @@ func (m Model) completedShow(modelStyle *Styles) string {
 		logger        = m.form.GetString(constants.LoggerKey)
 		httpFrame     = m.form.GetString(constants.HTTPFrameKey)
 		projectName   = m.form.GetString(constants.ProjectNameKey)
+		modulePath    = m.form.GetString(constants.ModulePathKey)
 		completedInfo strings.Builder
 		errors        = m.form.Errors()
 	)
@@ -185,6 +201,10 @@ func (m Model) completedShow(modelStyle *Styles) string {
 
 	if projectName != "" {
 		completedInfo.Write([]byte(fmt.Sprintf("Project Name: %s\n", projectName)))
+	}
+
+	if modulePath != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Module Path: %s\n", modulePath)))
 	}
 
 	if logger != "" {
@@ -249,8 +269,16 @@ func (m Model) appErrorBoundaryView(text string) string {
 	)
 }
 
-func (m Model) GetProjectName() string {
-	return m.form.GetString(constants.ProjectNameKey)
+type Info struct {
+	IsQuit      bool
+	ProjectName string
+}
+
+func (m Model) GetInfo() *Info {
+	return &Info{
+		IsQuit:      isQuit,
+		ProjectName: m.form.GetString(constants.ProjectNameKey),
+	}
 }
 
 func (m Model) GetForm() *huh.Form {
