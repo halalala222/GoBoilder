@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"time"
+	"sync"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh/spinner"
@@ -17,29 +17,19 @@ import (
 type Executor struct {
 	errorChan chan error
 	cancel    context.CancelFunc
+	hasErr    bool
 }
 
 var (
 	errorHeaderStyle  = lipgloss.NewStyle().Bold(true)
 	errorContentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#D86A64"))
+	successStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
 )
-
-func (e *Executor) prepareBurger(projectName string) func() {
-	return func() {
-		projectBuilder := build.NewProjectBuilder(projectName)
-
-		if err := projectBuilder.Build(); err != nil {
-			e.errorChan <- err
-			close(e.errorChan)
-			e.cancel()
-			return
-		}
-	}
-}
 
 func NewExecutor() *Executor {
 	return &Executor{
-		errorChan: make(chan error, 1),
+		errorChan: make(chan error, 10),
+		hasErr:    false,
 	}
 }
 
@@ -52,16 +42,30 @@ func (e *Executor) Execute() {
 		os.Exit(1)
 	}
 
-	go func() {
-		e.prepareBurger(huhModel.GetProjectName())()
-	}()
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	e.cancel = cancel
-	_ = spinner.New().Title("Building your project...").Context(ctx).Run()
+	builderList := build.GenerateAllBuilder(build.WithProjectName(huhModel.GetProjectName()))
+	wg := sync.WaitGroup{}
+	wg.Add(len(builderList))
+	for _, builder := range builderList {
+		go func() {
+			defer wg.Done()
+			if buildErr := builder.Build(); buildErr != nil {
+				e.errorChan <- buildErr
+				e.hasErr = true
+			}
+		}()
+	}
+
+	_ = spinner.New().Title("Building your project...").Action(func() {
+		wg.Wait()
+		close(e.errorChan)
+	}).Run()
 
 	for err = range e.errorChan {
 		fmt.Printf(errorHeaderStyle.Render("Oh no! Error building your project : "))
-		//fmt.Printf(errorContentStyle.Render(err.Error()))
+		fmt.Printf(errorContentStyle.Render(err.Error()))
+	}
+
+	if !e.hasErr {
+		fmt.Printf(successStyle.Render("Project built successfully!"))
 	}
 }
