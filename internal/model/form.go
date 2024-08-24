@@ -55,7 +55,6 @@ func NewStyles(lg *lipgloss.Renderer) *Styles {
 }
 
 type Model struct {
-	state  state
 	lg     *lipgloss.Renderer
 	styles *Styles
 	form   *huh.Form
@@ -115,7 +114,7 @@ func (m Model) currentLoggerBuildShow(buildInfo string) string {
 	)
 
 	if logger != "" {
-		return fmt.Sprintf("Logger: %s\n", logger)
+		return fmt.Sprintf("%s\nLogger: %s\n", buildInfo, logger)
 	}
 
 	return buildInfo
@@ -133,6 +132,18 @@ func (m Model) currentHTTPFrameBuildShow(buildInfo string) string {
 	return buildInfo
 }
 
+func (m Model) currentProjectName(buildInfo string) string {
+	var (
+		projectName = m.form.GetString(constants.ProjectNameKey)
+	)
+
+	if projectName != "" {
+		return fmt.Sprintf("Project Name: %s\n", projectName)
+	}
+
+	return buildInfo
+}
+
 func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 	var (
 		buildInfo      = constants.NoneCurrentBuildInfo
@@ -140,6 +151,7 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 		jobDescription string
 	)
 
+	buildInfo = m.currentProjectName(buildInfo)
 	buildInfo = m.currentLoggerBuildShow(buildInfo)
 	buildInfo = m.currentHTTPFrameBuildShow(buildInfo)
 
@@ -160,6 +172,7 @@ func (m Model) completedShow(modelStyle *Styles) string {
 	var (
 		logger        = m.form.GetString(constants.LoggerKey)
 		httpFrame     = m.form.GetString(constants.HTTPFrameKey)
+		projectName   = m.form.GetString(constants.ProjectNameKey)
 		completedInfo strings.Builder
 		errors        = m.form.Errors()
 	)
@@ -169,6 +182,10 @@ func (m Model) completedShow(modelStyle *Styles) string {
 	}
 
 	completedInfo.Write([]byte("You have chosen the following:\n\n"))
+
+	if projectName != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Project Name: %s\n", projectName)))
+	}
 
 	if logger != "" {
 		completedInfo.Write([]byte(fmt.Sprintf("Logger: %s\n", logger)))
