@@ -248,3 +248,11 @@ func (m Model) appErrorBoundaryView(text string) string {
 		lipgloss.WithWhitespaceForeground(red),
 	)
 }
+
+func (m Model) GetProjectName() string {
+	return m.form.GetString(constants.ProjectNameKey)
+}
+
+func (m Model) GetForm() *huh.Form {
+	return m.form
+}
