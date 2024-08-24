@@ -34,4 +34,6 @@ const (
 	ProjectLoggerPkgPath = "/pkg/log"
 
 	GitIgnoreFileName = ".gitignore"
+	READEMEFileName   = "README.md"
+	MakefileFileName  = "Makefile"
 )
