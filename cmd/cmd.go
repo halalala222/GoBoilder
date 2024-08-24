@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 	"sync"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -24,6 +23,7 @@ var (
 	errorHeaderStyle  = lipgloss.NewStyle().Bold(true)
 	errorContentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#D86A64"))
 	successStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
+	quitStyle         = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
 )
 
 func NewExecutor() *Executor {
@@ -39,10 +39,17 @@ func (e *Executor) Execute() {
 
 	if err != nil {
 		fmt.Println("Oh no:", err)
-		os.Exit(1)
+		return
 	}
 
-	builderList := build.GenerateAllBuilder(build.WithProjectName(huhModel.GetProjectName()))
+	huhModelInfo := huhModel.GetInfo()
+
+	if huhModelInfo.IsQuit {
+		fmt.Printf(quitStyle.Render("Quit!Bye bye!"))
+		return
+	}
+
+	builderList := build.GenerateAllBuilder(build.WithProjectName(huhModelInfo.ProjectName))
 	wg := sync.WaitGroup{}
 	wg.Add(len(builderList))
 	for _, builder := range builderList {
