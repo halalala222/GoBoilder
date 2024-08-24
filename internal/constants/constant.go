@@ -30,4 +30,8 @@ const (
 	ProjectName            = "Enter project name"
 	ProjectNamePlaceholder = "my_project"
 	ProjectNameDescription = "This will be the name of your project"
+
+	ProjectLoggerPkgPath = "/pkg/log"
+
+	GitIgnoreFileName = ".gitignore"
 )
