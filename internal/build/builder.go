@@ -2,6 +2,7 @@ package build
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"text/template"
 
@@ -64,4 +65,18 @@ func (t *templateFileBuilder) build(projectName string) error {
 	}
 
 	return tmpl.Execute(file, t.data)
+}
+
+func GoModInit(projectName string, modulePath string) error {
+	cmd := exec.Command("go", "mod", "init", modulePath)
+	cmd.Dir = projectName
+
+	return cmd.Run()
+}
+
+func GoModTidy(projectName string) error {
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Dir = projectName
+
+	return cmd.Run()
 }
