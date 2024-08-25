@@ -122,13 +122,13 @@ func (m Model) currentProjectName(buildInfo string) string {
 	return buildInfo
 }
 
-func (m Model) currentModulePath(buildInfo string) string {
+func (m Model) currentModulePathPrefix(buildInfo string) string {
 	var (
-		modulePath = m.form.GetString(constants.ModulePathKey)
+		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
 	)
 
-	if modulePath != "" {
-		return fmt.Sprintf("%sModule Path: %s\n", buildInfo, modulePath)
+	if modulePathPrefix != "" {
+		return fmt.Sprintf("%sModule Path Prefix: %s\n", buildInfo, modulePathPrefix)
 	}
 
 	return buildInfo
@@ -166,7 +166,7 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 	)
 
 	buildInfo = m.currentProjectName(buildInfo)
-	buildInfo = m.currentModulePath(buildInfo)
+	buildInfo = m.currentModulePathPrefix(buildInfo)
 	buildInfo = m.currentLoggerBuildShow(buildInfo)
 	buildInfo = m.currentHTTPFrameBuildShow(buildInfo)
 
@@ -185,12 +185,12 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 
 func (m Model) completedShow(modelStyle *Styles) string {
 	var (
-		logger        = m.form.GetString(constants.LoggerKey)
-		httpFrame     = m.form.GetString(constants.HTTPFrameKey)
-		projectName   = m.form.GetString(constants.ProjectNameKey)
-		modulePath    = m.form.GetString(constants.ModulePathKey)
-		completedInfo strings.Builder
-		errors        = m.form.Errors()
+		logger           = m.form.GetString(constants.LoggerKey)
+		httpFrame        = m.form.GetString(constants.HTTPFrameKey)
+		projectName      = m.form.GetString(constants.ProjectNameKey)
+		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
+		completedInfo    strings.Builder
+		errors           = m.form.Errors()
 	)
 
 	if len(errors) > 0 {
@@ -203,8 +203,8 @@ func (m Model) completedShow(modelStyle *Styles) string {
 		completedInfo.Write([]byte(fmt.Sprintf("Project Name: %s\n", projectName)))
 	}
 
-	if modulePath != "" {
-		completedInfo.Write([]byte(fmt.Sprintf("Module Path: %s\n", modulePath)))
+	if modulePathPrefix != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Module Path Prefix: %s\n", modulePathPrefix)))
 	}
 
 	if logger != "" {
@@ -270,15 +270,22 @@ func (m Model) appErrorBoundaryView(text string) string {
 }
 
 type Info struct {
-	IsQuit      bool
-	ProjectName string
+	IsQuit        bool
+	ProjectName   string
+	ModulePath    string
+	LoggerLibrary string
 }
 
 func (m Model) GetInfo() *Info {
-	return &Info{
-		IsQuit:      isQuit,
-		ProjectName: m.form.GetString(constants.ProjectNameKey),
+	info := &Info{
+		IsQuit:        isQuit,
+		ProjectName:   m.form.GetString(constants.ProjectNameKey),
+		LoggerLibrary: m.form.GetString(constants.LoggerKey),
 	}
+
+	info.ModulePath = fmt.Sprintf("%s/%s", m.form.GetString(constants.ModulePathPrefixKey), info.ProjectName)
+
+	return info
 }
 
 func (m Model) GetForm() *huh.Form {
