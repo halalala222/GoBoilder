@@ -26,6 +26,11 @@ var (
 	quitStyle         = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
 )
 
+func errorPrint(err error) {
+	fmt.Printf(errorHeaderStyle.Render("Oh no! Error creating directories : "))
+	fmt.Printf(errorContentStyle.Render(err.Error()))
+}
+
 func NewExecutor() *Executor {
 	return &Executor{
 		errorChan: make(chan error, 10),
@@ -35,10 +40,9 @@ func NewExecutor() *Executor {
 
 func (e *Executor) Execute() {
 	huhModel := model.NewModel()
-	_, err := tea.NewProgram(huhModel).Run()
 
-	if err != nil {
-		fmt.Println("Oh no:", err)
+	if _, err := tea.NewProgram(huhModel).Run(); err != nil {
+		errorPrint(err)
 		return
 	}
 
@@ -49,9 +53,13 @@ func (e *Executor) Execute() {
 		return
 	}
 
-	if err = build.AllDir(huhModelInfo.ProjectName); err != nil {
-		fmt.Printf(errorHeaderStyle.Render("Oh no! Error creating directories : "))
-		fmt.Printf(errorContentStyle.Render(err.Error()))
+	if err := build.AllDir(huhModelInfo.ProjectName); err != nil {
+		errorPrint(err)
+		return
+	}
+
+	if err := build.GoModInit(huhModelInfo.ProjectName, huhModelInfo.ModulePath); err != nil {
+		errorPrint(err)
 		return
 	}
 
@@ -82,9 +90,8 @@ func (e *Executor) Execute() {
 		close(e.errorChan)
 	}).Run()
 
-	for err = range e.errorChan {
-		fmt.Printf(errorHeaderStyle.Render("Oh no! Error building your project : "))
-		fmt.Printf(errorContentStyle.Render(err.Error()))
+	for err := range e.errorChan {
+		errorPrint(err)
 	}
 
 	if !e.hasErr {
