@@ -49,7 +49,18 @@ func (e *Executor) Execute() {
 		return
 	}
 
-	builderList := build.GenerateAllBuilder(build.WithProjectName(huhModelInfo.ProjectName))
+	if err = build.AllDir(huhModelInfo.ProjectName); err != nil {
+		fmt.Printf(errorHeaderStyle.Render("Oh no! Error creating directories : "))
+		fmt.Printf(errorContentStyle.Render(err.Error()))
+		return
+	}
+
+	builderList := build.GenerateAllBuilder(
+		build.WithProjectName(huhModelInfo.ProjectName),
+		build.WithLoggerLibrary(huhModelInfo.LoggerLibrary),
+		build.WithModulePath(huhModelInfo.ModulePath),
+	)
+
 	wg := sync.WaitGroup{}
 	wg.Add(len(builderList))
 	for _, builder := range builderList {
