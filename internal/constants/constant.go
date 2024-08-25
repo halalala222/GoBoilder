@@ -3,7 +3,6 @@ package constants
 const (
 	ZapLoggerLibrary  = "zap"
 	SlogLoggerLibrary = "slog"
-	DefaultChoiceItem = "default"
 
 	NoneCurrentBuildInfo = "(none)"
 	CurrentBuildTitle    = "Current build"
