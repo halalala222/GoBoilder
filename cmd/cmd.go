@@ -75,6 +75,10 @@ func (e *Executor) Execute() {
 
 	_ = spinner.New().Title("Building your project...").Action(func() {
 		wg.Wait()
+		if err := build.GoModTidy(huhModelInfo.ProjectName); err != nil {
+			e.errorChan <- err
+			e.hasErr = true
+		}
 		close(e.errorChan)
 	}).Run()
 
