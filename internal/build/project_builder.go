@@ -1,10 +1,6 @@
 package build
 
 import (
-	"os"
-	"path/filepath"
-	"text/template"
-
 	"github.com/halalala222/GoBoilder/internal/constants"
 	"github.com/halalala222/GoBoilder/internal/template/project"
 )
@@ -21,56 +17,33 @@ func NewProjectBuilder(projectName string) *ProjectBuilder {
 	}
 }
 
-type projectFileBuild struct {
-	fileName string
-	template []byte
-}
-
-func newGitIgnoreFileBuild() *projectFileBuild {
-	return &projectFileBuild{
+func newGitIgnoreFileBuilder() *templateFileBuilder {
+	return &templateFileBuilder{
 		fileName: constants.GitIgnoreFileName,
 		template: project.GitIgnoreTemplate,
 	}
 }
 
-func newREADMEFileBuild() *projectFileBuild {
-	return &projectFileBuild{
+func newREADMEFileBuilder() *templateFileBuilder {
+	return &templateFileBuilder{
 		fileName: constants.READEMEFileName,
 		template: project.ReadmeTemplate,
 	}
 }
 
-func newMakefileFileBuild() *projectFileBuild {
-	return &projectFileBuild{
+func newMakefileFileBuilder() *templateFileBuilder {
+	return &templateFileBuilder{
 		fileName: constants.MakefileFileName,
 		template: project.MakefileTemplate,
 	}
 }
 
-func getAllProjectFileBuild() []*projectFileBuild {
-	return []*projectFileBuild{
-		newGitIgnoreFileBuild(),
-		newREADMEFileBuild(),
-		newMakefileFileBuild(),
+func getAllProjectFileBuilder() []*templateFileBuilder {
+	return []*templateFileBuilder{
+		newGitIgnoreFileBuilder(),
+		newREADMEFileBuilder(),
+		newMakefileFileBuilder(),
 	}
-}
-
-func (p *projectFileBuild) build(projectName string) error {
-	var (
-		err  error
-		tmpl *template.Template
-		file *os.File
-	)
-
-	if file, err = os.Create(filepath.Join(projectName, p.fileName)); err != nil {
-		return err
-	}
-
-	if tmpl, err = template.New(p.fileName).Parse(string(p.template)); err != nil {
-		return err
-	}
-
-	return tmpl.Execute(file, nil)
 }
 
 func (p *ProjectBuilder) Build() error {
@@ -78,11 +51,7 @@ func (p *ProjectBuilder) Build() error {
 		err error
 	)
 
-	if err = os.Mkdir(p.projectName, os.ModePerm); err != nil {
-		return err
-	}
-
-	for _, fileBuild := range getAllProjectFileBuild() {
+	for _, fileBuild := range getAllProjectFileBuilder() {
 		if err = fileBuild.build(p.projectName); err != nil {
 			return err
 		}
