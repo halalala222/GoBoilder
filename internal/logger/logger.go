@@ -28,6 +28,11 @@ var supportedLibraries = map[string]LibraryTemplate{
 	constants.SlogLoggerLibrary: &SlogLoggerTemplate{},
 }
 
+var supportedLoggersLibrariesFileNames = map[string]string{
+	constants.ZapLoggerLibrary:  constants.ZapLoggerFileName,
+	constants.SlogLoggerLibrary: constants.SlogLoggerFileName,
+}
+
 // GetLibraryTemplate returns the LibraryTemplate for the given library.
 func GetLibraryTemplate(library string) (LibraryTemplate, error) {
 	var (
@@ -40,6 +45,11 @@ func GetLibraryTemplate(library string) (LibraryTemplate, error) {
 	}
 
 	return libraryTemplate, nil
+}
+
+// GetLoggerLibraryFileName returns the file name for the given library.
+func GetLoggerLibraryFileName(library string) string {
+	return supportedLoggersLibrariesFileNames[library]
 }
 
 func GetAllSupportedLibraries() []string {
