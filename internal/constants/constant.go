@@ -31,14 +31,19 @@ const (
 	ProjectNamePlaceholder = "my_project"
 	ProjectNameDescription = "This will be the name of your project"
 
-	ModulePathKey         = "module_path"
-	ModulePath            = "Enter module path"
-	ModulePathPlaceholder = "github.com/halalala222/my_project"
-	ModulePathDescription = "This will be the module path of your project"
+	ModulePathPrefixKey         = "module_path"
+	ModulePathPrefix            = "Enter module path"
+	ModulePathPrefixPlaceholder = "github.com/halalala222"
+	ModulePathPrefixDescription = "module path prefix + project name = module path"
 
-	ProjectLoggerPkgPath = "/pkg/log"
+	ProjectLoggerPkgPath      = "/pkg/log"
+	ProjectInternalPkgLogPath = "/internal/log"
 
-	GitIgnoreFileName = ".gitignore"
-	READEMEFileName   = "README.md"
-	MakefileFileName  = "Makefile"
+	GitIgnoreFileName  = ".gitignore"
+	READEMEFileName    = "README.md"
+	MakefileFileName   = "Makefile"
+	LoggerFileNae      = "logger.go"
+	SlogLoggerFileName = "slog_logger.go"
+	ZapLoggerFileName  = "zap_logger.go"
+	LogFileName        = "log.go"
 )
