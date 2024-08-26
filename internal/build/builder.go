@@ -19,6 +19,7 @@ func GenerateAllBuilder(options ...Option) []Builder {
 	return []Builder{
 		NewProjectBuilder(opts.projectName),
 		NewLoggerBuilder(opts.projectName, opts.loggerLibrary, opts.modulePath),
+		NewDomainBuilder(opts.projectName),
 	}
 }
 
@@ -26,6 +27,7 @@ func getAllDir(projectName string) []string {
 	return []string{
 		filepath.Join(projectName, constants.ProjectLoggerPkgPath),
 		filepath.Join(projectName, constants.ProjectInternalPkgLogPath),
+		filepath.Join(projectName, constants.ProjectDomainPkgPath),
 	}
 }
 
