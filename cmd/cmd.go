@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/halalala222/GoBoilder/internal/constants"
 	"sync"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -24,6 +25,7 @@ var (
 	errorContentStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#D86A64"))
 	successStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
 	quitStyle         = lipgloss.NewStyle().Foreground(lipgloss.Color("#6CA76C"))
+	logoStyle         = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#6CA76C"))
 )
 
 func errorPrint(err error) {
@@ -39,6 +41,8 @@ func NewExecutor() *Executor {
 }
 
 func (e *Executor) Execute() {
+	fmt.Println(logoStyle.Render(constants.Logo))
+
 	huhModel := model.NewModel()
 
 	if _, err := tea.NewProgram(huhModel).Run(); err != nil {
