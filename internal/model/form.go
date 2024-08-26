@@ -17,7 +17,7 @@ var (
 	red    = lipgloss.AdaptiveColor{Light: "#FE5F86", Dark: "#FE5F86"}
 	indigo = lipgloss.AdaptiveColor{Light: "#5A56E0", Dark: "#7571F9"}
 	green  = lipgloss.AdaptiveColor{Light: "#02BA84", Dark: "#02BF87"}
-	isQuit = false
+	info   = &Info{}
 )
 
 type Styles struct {
@@ -69,6 +69,7 @@ func NewModel() Model {
 
 	m.form = huh.NewForm(
 		newProjectNameInputGroup(),
+		newDBFormHubGroup(),
 		newFormHuhGroup(),
 	).
 		WithWidth(50).
@@ -88,7 +89,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc", "ctrl+c", "q":
-			isQuit = true
+			info.IsQuit = true
 			return m, tea.Quit
 		}
 	}
@@ -274,15 +275,12 @@ type Info struct {
 	ProjectName   string
 	ModulePath    string
 	LoggerLibrary string
+	HTTPFramework string
+	DB            string
+	DBLibrary     string
 }
 
 func (m Model) GetInfo() *Info {
-	info := &Info{
-		IsQuit:        isQuit,
-		ProjectName:   m.form.GetString(constants.ProjectNameKey),
-		LoggerLibrary: m.form.GetString(constants.LoggerKey),
-	}
-
 	info.ModulePath = fmt.Sprintf("%s/%s", m.form.GetString(constants.ModulePathPrefixKey), info.ProjectName)
 
 	return info
