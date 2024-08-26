@@ -11,6 +11,7 @@ import (
 
 type Builder interface {
 	Build() error
+	String() string
 }
 
 func GenerateAllBuilder(options ...Option) []Builder {
@@ -20,6 +21,7 @@ func GenerateAllBuilder(options ...Option) []Builder {
 		NewProjectBuilder(opts.projectName),
 		NewLoggerBuilder(opts.projectName, opts.loggerLibrary, opts.modulePath),
 		NewDomainBuilder(opts.projectName),
+		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db),
 	}
 }
 
@@ -28,6 +30,7 @@ func getAllDir(projectName string) []string {
 		filepath.Join(projectName, constants.ProjectLoggerPkgPath),
 		filepath.Join(projectName, constants.ProjectInternalPkgLogPath),
 		filepath.Join(projectName, constants.ProjectDomainPkgPath),
+		filepath.Join(projectName, constants.ProjectConfigPkgPath),
 	}
 }
 
