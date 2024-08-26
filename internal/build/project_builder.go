@@ -11,6 +11,10 @@ type ProjectBuilder struct {
 	projectName string
 }
 
+func (p *ProjectBuilder) String() string {
+	return "ProjectBuilder"
+}
+
 func NewProjectBuilder(projectName string) *ProjectBuilder {
 	return &ProjectBuilder{
 		projectName: projectName,

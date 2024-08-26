@@ -15,6 +15,10 @@ type LoggerBuilder struct {
 	modulePath  string
 }
 
+func (l *LoggerBuilder) String() string {
+	return "LoggerBuilder"
+}
+
 func NewLoggerBuilder(projectName, library, modulePath string) *LoggerBuilder {
 	return &LoggerBuilder{
 		projectName: projectName,

@@ -13,16 +13,20 @@ type DomainBuilder struct {
 	projectName string
 }
 
+func (d *DomainBuilder) String() string {
+	return "DomainBuilder"
+}
+
 func NewDomainBuilder(projectName string) *DomainBuilder {
 	return &DomainBuilder{
 		projectName: projectName,
 	}
 }
 
-func newArticleFileBuilder() *templateFileBuilder {
+func newUserFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.DomainArticleFileNae,
-		template: domain.ArticleTemplate,
+		fileName: constants.DomainUserFileNae,
+		template: domain.UserTemplate,
 	}
 }
 
@@ -35,7 +39,7 @@ func newErrorsFileBuilder() *templateFileBuilder {
 
 func getAllDomainFileBuilder() []*templateFileBuilder {
 	return []*templateFileBuilder{
-		newArticleFileBuilder(),
+		newUserFileBuilder(),
 		newErrorsFileBuilder(),
 	}
 }
