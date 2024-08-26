@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/halalala222/GoBoilder/internal/constants"
 	"sync"
@@ -58,12 +59,12 @@ func (e *Executor) Execute() {
 	}
 
 	if err := build.AllDir(huhModelInfo.ProjectName); err != nil {
-		errorPrint(err)
+		errorPrint(errors.New("Build all dir error: " + err.Error()))
 		return
 	}
 
 	if err := build.GoModInit(huhModelInfo.ProjectName, huhModelInfo.ModulePath); err != nil {
-		errorPrint(err)
+		errorPrint(errors.New("Go mod init error: " + err.Error()))
 		return
 	}
 
@@ -71,6 +72,7 @@ func (e *Executor) Execute() {
 		build.WithProjectName(huhModelInfo.ProjectName),
 		build.WithLoggerLibrary(huhModelInfo.LoggerLibrary),
 		build.WithModulePath(huhModelInfo.ModulePath),
+		build.WithDB(huhModelInfo.DB),
 	)
 
 	wg := sync.WaitGroup{}
@@ -79,7 +81,7 @@ func (e *Executor) Execute() {
 		go func() {
 			defer wg.Done()
 			if buildErr := builder.Build(); buildErr != nil {
-				e.errorChan <- buildErr
+				e.errorChan <- errors.New(builder.String() + " : " + buildErr.Error())
 				e.hasErr = true
 			}
 		}()
@@ -88,7 +90,7 @@ func (e *Executor) Execute() {
 	_ = spinner.New().Title("Building your project...").Action(func() {
 		wg.Wait()
 		if err := build.GoModTidy(huhModelInfo.ProjectName); err != nil {
-			e.errorChan <- err
+			e.errorChan <- errors.New("Go mod tidy error: " + err.Error())
 			e.hasErr = true
 		}
 		close(e.errorChan)
