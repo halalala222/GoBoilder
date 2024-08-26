@@ -37,12 +37,15 @@ const (
 
 	ProjectLoggerPkgPath      = "/pkg/log"
 	ProjectInternalPkgLogPath = "/internal/log"
+	ProjectDomainPkgPath      = "/domain"
 
-	GitIgnoreFileName  = ".gitignore"
-	READEMEFileName    = "README.md"
-	MakefileFileName   = "Makefile"
-	LoggerFileNae      = "logger.go"
-	SlogLoggerFileName = "slog_logger.go"
-	ZapLoggerFileName  = "zap_logger.go"
-	LogFileName        = "log.go"
+	GitIgnoreFileName    = ".gitignore"
+	READEMEFileName      = "README.md"
+	MakefileFileName     = "Makefile"
+	LoggerFileNae        = "logger.go"
+	SlogLoggerFileName   = "slog_logger.go"
+	ZapLoggerFileName    = "zap_logger.go"
+	LogFileName          = "log.go"
+	DomainArticleFileNae = "article.go"
+	DomainErrorsFileName = "errors.go"
 )
