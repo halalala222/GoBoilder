@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/charmbracelet/huh"
 
+	"github.com/halalala222/GoBoilder/internal/config"
 	"github.com/halalala222/GoBoilder/internal/constants"
 	"github.com/halalala222/GoBoilder/internal/http"
 	"github.com/halalala222/GoBoilder/internal/logger"
@@ -13,6 +14,7 @@ func newProjectNameInputGroup() *huh.Group {
 	return huh.NewGroup(
 		huh.NewInput().
 			Key(constants.ProjectNameKey).
+			Value(&info.ProjectName).
 			Title(constants.ProjectName).
 			Placeholder(constants.ProjectNamePlaceholder).
 			Validate(func(s string) error {
@@ -30,16 +32,36 @@ func newProjectNameInputGroup() *huh.Group {
 	)
 }
 
+func newDBFormHubGroup() *huh.Group {
+	return huh.NewGroup(
+		huh.NewSelect[string]().
+			Value(&info.DB).
+			Key(constants.DBKey).
+			Options(huh.NewOptions(config.GetSupportedDB()...)...).
+			Title(constants.ChoiceDBTitle).
+			Description(constants.ChoiceDBDescription),
+		huh.NewSelect[string]().
+			Key(constants.DBLibraryKey).
+			OptionsFunc(func() []huh.Option[string] {
+				return huh.NewOptions(config.GetDBLibraries(info.DB)...)
+			}, &info.DB).
+			Title(constants.ChoiceDBLibraryTitle).
+			Description(constants.ChoiceDBLibraryDescription),
+	)
+}
+
 func newFormHuhGroup() *huh.Group {
 	return huh.NewGroup(
 		huh.NewSelect[string]().
 			Key(constants.LoggerKey).
+			Value(&info.LoggerLibrary).
 			Options(huh.NewOptions(logger.GetAllSupportedLibraries()...)...).
 			Title(constants.ChoiceLoggerTitle).
 			Description(constants.ChoiceLoggerDescription),
 
 		huh.NewSelect[string]().
 			Key(constants.HTTPFrameKey).
+			Value(&info.HTTPFramework).
 			Options(huh.NewOptions(http.GetAllSupportedHTTPFrameworks()...)...).
 			Title(constants.ChoiceHTTPFrameTitle).
 			Description(constants.ChoiceHTTPFrameDescription),
