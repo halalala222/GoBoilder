@@ -1,0 +1,27 @@
+package repository
+
+import (
+	"context"
+
+	"{{.ModulePath}}/domain"
+	"gorm.io/gorm"
+)
+
+type UserRepository struct {
+	mysqlDB *gorm.DB
+}
+
+func NewUserRepo(db *gorm.DB) domain.UserRepository {
+	return &UserRepository{
+		mysqlDB: db,
+	}
+}
+
+func (u *UserRepository) GetUserByUserID(ctx context.Context, userID int64) (domain.User, error) {
+	var (
+		user domain.User
+	)
+	
+	err := u.mysqlDB.WithContext(ctx).Model(&domain.User{}).Where("id = ?", userID).First(&user).Error
+	return user, err
+}
