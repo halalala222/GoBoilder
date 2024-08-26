@@ -1,0 +1,48 @@
+package config
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"{{.ModulePath}}/internal/pkg/log"
+	logger "{{.ModulePath}}/pkg/log"
+)
+
+func NewGinEngine() *gin.Engine {
+	e := gin.New()
+	e.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		// your custom format
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}), gin.Recovery())
+	return e
+}
+
+func CloseRouter(srv *http.Server) {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM)
+	<-quit
+	log.Log().Info("Shutting down server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Log().Fatal("Server forced to shut down", logger.Field{Key: "error", Value: err})
+	}
+	log.Log().Info("Server exited")
+}
