@@ -25,6 +25,14 @@ const (
 
 	QuitBody = "Application quit"
 
+	DBKey               = "db"
+	ChoiceDBTitle       = "Choose your database"
+	ChoiceDBDescription = "This will determine your database"
+
+	DBLibraryKey               = "db_library"
+	ChoiceDBLibraryTitle       = "Choose your database library"
+	ChoiceDBLibraryDescription = "This will determine your database library"
+
 	ProjectNameKey         = "project_name"
 	ProjectName            = "Enter project name"
 	ProjectNamePlaceholder = "my_project"
@@ -38,6 +46,7 @@ const (
 	ProjectLoggerPkgPath      = "/pkg/log"
 	ProjectInternalPkgLogPath = "/internal/log"
 	ProjectDomainPkgPath      = "/domain"
+	ProjectConfigPkgPath      = "/internal/config"
 
 	GitIgnoreFileName    = ".gitignore"
 	READEMEFileName      = "README.md"
@@ -46,6 +55,7 @@ const (
 	SlogLoggerFileName   = "slog_logger.go"
 	ZapLoggerFileName    = "zap_logger.go"
 	LogFileName          = "log.go"
-	DomainArticleFileNae = "article.go"
+	DomainUserFileNae    = "user.go"
 	DomainErrorsFileName = "errors.go"
+	GormConfigFileName   = "gorm.go"
 )
