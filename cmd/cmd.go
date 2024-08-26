@@ -28,7 +28,7 @@ var (
 
 func errorPrint(err error) {
 	fmt.Printf(errorHeaderStyle.Render("Oh no! Error creating directories : "))
-	fmt.Printf(errorContentStyle.Render(err.Error()))
+	fmt.Println(errorContentStyle.Render(err.Error()))
 }
 
 func NewExecutor() *Executor {
@@ -49,7 +49,7 @@ func (e *Executor) Execute() {
 	huhModelInfo := huhModel.GetInfo()
 
 	if huhModelInfo.IsQuit {
-		fmt.Printf(quitStyle.Render("Quit!Bye bye!"))
+		fmt.Println(quitStyle.Render("Quit!Bye bye!"))
 		return
 	}
 
@@ -95,6 +95,6 @@ func (e *Executor) Execute() {
 	}
 
 	if !e.hasErr {
-		fmt.Printf(successStyle.Render("Project built successfully!"))
+		fmt.Println(successStyle.Render("Project built successfully!"))
 	}
 }
