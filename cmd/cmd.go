@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/halalala222/GoBoilder/internal/constants"
 	"sync"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -12,6 +11,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/halalala222/GoBoilder/internal/build"
+	"github.com/halalala222/GoBoilder/internal/constants"
 	"github.com/halalala222/GoBoilder/internal/model"
 )
 
