@@ -219,12 +219,31 @@ func (m Model) completedShow(modelStyle *Styles) string {
 	return modelStyle.Status.Margin(0, 1).Padding(1, 2).Width(48).Render(completedInfo.String()) + "\n\n"
 }
 
-func (m Model) applicationShow(modelStyle *Styles, form string, currentBuild string) string {
-	errors := m.form.Errors()
-	header := m.appBoundaryView(constants.ApplicationHeader)
-	if len(errors) > 0 {
-		m.form.State = huh.StateCompleted
+func (m Model) applicationErrorShow(modelStyle *Styles, form string, currentBuild string) string {
+	var (
+		headerBuilder = strings.Builder{}
+	)
+
+	for _, err := range m.form.Errors() {
+		headerBuilder.WriteString(m.appErrorBoundaryView(err.Error()))
+		headerBuilder.WriteString("\n")
 	}
+
+	header := headerBuilder.String()
+
+	body := lipgloss.JoinHorizontal(lipgloss.Top, form, currentBuild)
+
+	footer := m.appErrorBoundaryView(m.form.Help().ShortHelpView(m.form.KeyBinds()))
+
+	return modelStyle.Base.Render(header + "\n" + body + "\n\n" + footer)
+}
+
+func (m Model) applicationShow(modelStyle *Styles, form string, currentBuild string) string {
+	if errors := m.form.Errors(); len(errors) > 0 {
+		return m.applicationErrorShow(modelStyle, form, currentBuild)
+	}
+
+	header := m.appBoundaryView(constants.ApplicationHeader)
 
 	body := lipgloss.JoinHorizontal(lipgloss.Top, form, currentBuild)
 
