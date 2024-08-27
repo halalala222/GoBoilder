@@ -281,7 +281,15 @@ type Info struct {
 }
 
 func (m Model) GetInfo() *Info {
-	info.ModulePath = fmt.Sprintf("%s/%s", m.form.GetString(constants.ModulePathPrefixKey), info.ProjectName)
+	var (
+		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
+	)
+
+	if len(modulePathPrefix) != 0 {
+		info.ModulePath = fmt.Sprintf("%s/%s", m.form.GetString(constants.ModulePathPrefixKey), info.ProjectName)
+	} else {
+		info.ModulePath = info.ProjectName
+	}
 
 	return info
 }
