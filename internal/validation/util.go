@@ -18,6 +18,10 @@ func CheckProjectName(projectName string) error {
 		return constants.ErrProjectNameEmpty
 	}
 
+	if err = validateProjectName(projectName); err != nil {
+		return err
+	}
+
 	if _, err = os.Stat(projectName); os.IsExist(err) {
 		return constants.ErrProjectNameExists
 	}
