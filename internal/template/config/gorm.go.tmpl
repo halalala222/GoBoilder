@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -15,16 +14,18 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
-	"{{.ModulePath}}/consts"
-	pkgLog "{{.ModulePath}}/internal/pkg/log"
+	pkgLog "{{.ModulePath}}/internal/log"
 	pkgLogger "{{.ModulePath}}/pkg/log"
+)
+
+const (
+    defaultSQLLogFilePath = "logs/sql.log"
 )
 
 var (
 	db     *gorm.DB
 	dbOnce sync.Once
 )
-
 {{ if eq .DB "mysql" }}
 func getGormDialector() gorm.Dialector {
 	return mysql.New(mysql.Config{
@@ -46,7 +47,6 @@ func getGormDialector() gorm.Dialector {
     panic("unknown db")
 }
 {{ end }}
-
 func DB(ctx context.Context) *gorm.DB {
 	dbOnce.Do(func() {
 		var err error
@@ -70,7 +70,7 @@ func getGormLogger() logger.Interface {
 		ignoreRecordNotFound = true
 		logLevel = logger.Error
 	}
-	logFile, err := os.OpenFile(consts.DefaultSQLLogFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logFile, err := os.OpenFile(defaultSQLLogFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)
 	}
