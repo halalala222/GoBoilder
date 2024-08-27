@@ -38,7 +38,7 @@ func CheckModulePath(modulePath string) error {
 		return constants.ErrModulePathEmpty
 	}
 
-	return nil
+	return validateModulePathPrefix(modulePath)
 }
 
 // isAllowedCharacter checks if the character is an allowed ASCII character
@@ -94,4 +94,93 @@ func validateProjectName(projectName string) error {
 
 	// for requirement 1 and 3
 	return validateSpecifiedASCII(projectName)
+}
+
+// windowsReservedFileNames is a list of reserved file names on Windows
+var windowsReservedFileNames = []string{
+	"CON", "PRN", "AUX", "NUL",
+	"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+	"LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+}
+
+func validateModulePathPrefixBeforeFirstDotWithWindowReservedFileNames(firstSplit string) error {
+	// for requirement 4
+	for _, reservedFileName := range windowsReservedFileNames {
+		if strings.EqualFold(firstSplit, reservedFileName) {
+			return errors.Join(errors.New(fmt.Sprintf("element: %s", firstSplit)), constants.ErrProjectModulePathContainsWindowsReservedFileName)
+		}
+	}
+
+	return nil
+}
+
+func validateModulePathPrefixBeforeFirstDotWithTildeFollowedByDigits(firstSplit string) error {
+	// for requirement 5
+	lastTildeIndex := strings.LastIndex(firstSplit, "~")
+	if lastTildeIndex == -1 {
+		return nil
+	}
+
+	for i := len(firstSplit) - 1; i > lastTildeIndex; i-- {
+		if firstSplit[i] < '0' || firstSplit[i] > '9' {
+			return nil
+		}
+	}
+
+	return errors.Join(errors.New(fmt.Sprintf("element: %s", firstSplit)), constants.ErrProjectModulePathEndWithTildeFollowedByDigits)
+}
+
+func validateModulePathPrefixBeforeFirstDot(modulePathPrefix string) error {
+	var (
+		modulePathPrefixSplit = strings.Split(modulePathPrefix, ".")
+	)
+
+	if len(modulePathPrefixSplit) == 0 {
+		return nil
+	}
+
+	firstSplit := modulePathPrefixSplit[0]
+
+	if err := validateModulePathPrefixBeforeFirstDotWithWindowReservedFileNames(firstSplit); err != nil {
+		return err
+	}
+
+	return validateModulePathPrefixBeforeFirstDotWithTildeFollowedByDigits(firstSplit)
+}
+
+func validateModulePathPrefixSplit(modulePathPrefix string) error {
+	var (
+		modulePathPrefixElements = strings.Split(modulePathPrefix, "/")
+	)
+
+	for _, element := range modulePathPrefixElements {
+		// for requirement 2
+		if err := validateSpecifiedASCII(element); err != nil {
+			return errors.Join(errors.New(fmt.Sprintf("element: %s", element)), err)
+		}
+		// for requirement 3
+		if strings.HasPrefix(element, ".") || strings.HasSuffix(element, ".") {
+			return errors.Join(errors.New(fmt.Sprintf("element: %s", element)), constants.ErrProjectNameStartOrEndWithDot)
+		}
+	}
+
+	return nil
+}
+
+func validateModulePathPrefix(modulePathPrefix string) error {
+	// for requirement 1
+	if strings.HasSuffix(modulePathPrefix, "/") || strings.HasPrefix(modulePathPrefix, "/") {
+		return constants.ErrProjectModulePathPrefixStartOrEndWithSlash
+	}
+
+	// for requirement 1
+	if strings.Contains(modulePathPrefix, "//") {
+		return constants.ErrProjectModulePathPrefixContainsDoubleSlash
+	}
+
+	if err := validateModulePathPrefixSplit(modulePathPrefix); err != nil {
+		return err
+	}
+
+	return validateModulePathPrefixBeforeFirstDot(modulePathPrefix)
 }
