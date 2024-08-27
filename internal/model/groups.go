@@ -23,6 +23,7 @@ func newProjectNameInputGroup() *huh.Group {
 			Description(constants.ProjectNameDescription),
 		huh.NewInput().
 			Key(constants.ModulePathPrefixKey).
+			Value(&info.ModulePathPrefix).
 			Title(constants.ModulePathPrefix).
 			Placeholder(constants.ModulePathPrefixPlaceholder).
 			Validate(func(s string) error {

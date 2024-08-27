@@ -271,22 +271,19 @@ func (m Model) appErrorBoundaryView(text string) string {
 }
 
 type Info struct {
-	IsQuit        bool
-	ProjectName   string
-	ModulePath    string
-	LoggerLibrary string
-	HTTPFramework string
-	DB            string
-	DBLibrary     string
+	IsQuit           bool
+	ProjectName      string
+	ModulePath       string
+	ModulePathPrefix string
+	LoggerLibrary    string
+	HTTPFramework    string
+	DB               string
+	DBLibrary        string
 }
 
 func (m Model) GetInfo() *Info {
-	var (
-		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
-	)
-
-	if len(modulePathPrefix) != 0 {
-		info.ModulePath = fmt.Sprintf("%s/%s", m.form.GetString(constants.ModulePathPrefixKey), info.ProjectName)
+	if len(info.ModulePathPrefix) != 0 {
+		info.ModulePath = fmt.Sprintf("%s/%s", info.ModulePathPrefix, info.ProjectName)
 	} else {
 		info.ModulePath = info.ProjectName
 	}
