@@ -42,6 +42,7 @@ func newDBFormHubGroup() *huh.Group {
 			Title(constants.ChoiceDBTitle).
 			Description(constants.ChoiceDBDescription),
 		huh.NewSelect[string]().
+			Value(&info.DBLibrary).
 			Key(constants.DBLibraryKey).
 			OptionsFunc(func() []huh.Option[string] {
 				return huh.NewOptions(config.GetDBLibraries(info.DB)...)
