@@ -1,0 +1,42 @@
+package config
+
+import (
+	"database/sql"
+	"fmt"
+	"os"
+	"sync"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
+
+	pkgLog "{{.ModulePath}}/internal/log"
+	pkgLogger "{{.ModulePath}}/pkg/log"
+)
+
+var (
+	database = os.Getenv("DB_DATABASE")
+	password = os.Getenv("DB_PASSWORD")
+	username = os.Getenv("DB_USERNAME")
+	port     = os.Getenv("DB_PORT")
+	host     = os.Getenv("DB_HOST")
+	schema   = os.Getenv("DB_SCHEMA")
+	db       *sql.DB
+	dbOnce   sync.Once
+)
+
+func DB() *sql.DB {
+	dbOnce.Do(func() {
+		connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
+		var err error
+		if db, err = sql.Open("pgx", connStr); err != nil {
+			panic(err)
+		}
+	})
+
+	return db
+}
+
+func CloseDB() {
+	if err := db.Close(); err != nil {
+		pkgLog.Log().Error("sql db close error", pkgLogger.Field{Key: "err", Value: err})
+	}
+}

@@ -1,0 +1,52 @@
+package config
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"sync"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
+	pkgLog "{{.ModulePath}}/internal/log"
+	pkgLogger "{{.ModulePath}}/pkg/log"
+)
+
+var (
+	host   = os.Getenv("DB_HOST")
+	port   = os.Getenv("DB_PORT")
+	db     *mongo.Client
+	dbOnce sync.Once
+)
+
+func DB() *mongo.Client {
+	dbOnce.Do(func() {
+		var err error
+
+		uri := fmt.Sprintf("mongodb://%s:%s", host, port)
+		db, err = mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
+		if err != nil {
+			pkgLog.Log().Error(fmt.Sprintf("connect to mongodb failed: %v", err))
+		}
+	})
+
+	return db
+}
+
+func CloseDB() {
+	var (
+		ctx    context.Context
+		cancel context.CancelFunc
+	)
+
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	if err := db.Disconnect(ctx); err != nil {
+		pkgLog.Log().Error(fmt.Sprintf("disconnect to mongodb failed: %v", err))
+	}
+}

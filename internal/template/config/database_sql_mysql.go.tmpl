@@ -1,0 +1,35 @@
+package config
+
+import (
+	"database/sql"
+	"sync"
+
+	_ "github.com/go-sql-driver/mysql"
+
+	pkgLog "{{.ModulePath}}/internal/log"
+	pkgLogger "{{.ModulePath}}/pkg/log"
+)
+
+var (
+	dns    string
+	db     *sql.DB
+	dbOnce sync.Once
+)
+
+func DB() *sql.DB {
+	dbOnce.Do(func() {
+		var err error
+		if db, err = sql.Open("mysql", dns); err != nil {
+			panic(err)
+		}
+	})
+
+	return db
+}
+
+func CloseDB() {
+	var err error
+	if err = db.Close(); err != nil {
+		pkgLog.Log().Error("sql db close error", pkgLogger.Field{Key: "err", Value: err})
+	}
+}
