@@ -1,4 +1,4 @@
-package config
+package db
 
 import _ "embed"
 
@@ -16,6 +16,3 @@ var DatabaseSQLSQLiteConfigTemplate []byte
 
 //go:embed mongo_driver_mongodb.go.tmpl
 var MongoDriverMongoDBConfigTemplate []byte
-
-//go:embed gin.go.tmpl
-var GinConfigTemplate []byte

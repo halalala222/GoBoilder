@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/config"
+	"github.com/halalala222/GoBoilder/internal/template/config/db"
 )
 
 type DBLibraryInfo struct {
@@ -16,43 +16,43 @@ var supportedDB = map[string][]*DBLibraryInfo{
 		{
 			name:     constants.DatabaseLibraryGorm,
 			FileName: constants.GormConfigFileName,
-			Template: config.GormConfigTemplate,
+			Template: db.GormConfigTemplate,
 		},
 		{
 			name:     constants.DatabaseLibraryDatabaseSQL,
 			FileName: constants.DatabaseSQLMySQLConfigFileName,
-			Template: config.DatabaseSQLMySQLConfigTemplate,
+			Template: db.DatabaseSQLMySQLConfigTemplate,
 		},
 	},
 	constants.DataBasePostgreSQL: {
 		{
 			name:     constants.DatabaseLibraryGorm,
 			FileName: constants.GormConfigFileName,
-			Template: config.GormConfigTemplate,
+			Template: db.GormConfigTemplate,
 		},
 		{
 			name:     constants.DatabaseLibraryDatabaseSQL,
 			FileName: constants.DatabaseSQLPostgreSQLConfigFileName,
-			Template: config.DatabaseSQLPostgreSQLConfigTemplate,
+			Template: db.DatabaseSQLPostgreSQLConfigTemplate,
 		},
 	},
 	constants.DataBaseSQLite: {
 		{
 			name:     constants.DatabaseLibraryGorm,
 			FileName: constants.GormConfigFileName,
-			Template: config.GormConfigTemplate,
+			Template: db.GormConfigTemplate,
 		},
 		{
 			name:     constants.DatabaseLibraryDatabaseSQL,
 			FileName: constants.DatabaseSQLSQLiteConfigFileName,
-			Template: config.DatabaseSQLSQLiteConfigTemplate,
+			Template: db.DatabaseSQLSQLiteConfigTemplate,
 		},
 	},
 	constants.DataBaseMongoDB: {
 		{
 			name:     constants.DatabaseLibraryMongoDriver,
 			FileName: constants.MongoDriverMongoDBConfigFileName,
-			Template: config.MongoDriverMongoDBConfigTemplate,
+			Template: db.MongoDriverMongoDBConfigTemplate,
 		},
 	},
 }
