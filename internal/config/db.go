@@ -59,13 +59,13 @@ var supportedDB = map[string][]*DBLibraryInfo{
 
 // GetSupportedDB returns the supported databases.
 func GetSupportedDB() []string {
-	var dbs = make([]string, 0, len(supportedDB))
+	var dbList = make([]string, 0, len(supportedDB))
 
-	for db := range supportedDB {
-		dbs = append(dbs, db)
+	for supported := range supportedDB {
+		dbList = append(dbList, supported)
 	}
 
-	return dbs
+	return dbList
 }
 
 // GetDBLibraries returns the libraries for the given database.
