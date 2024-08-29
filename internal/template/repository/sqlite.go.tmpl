@@ -1,0 +1,37 @@
+package sqlite
+
+import (
+	"context"
+	"database/sql"
+	"fmt"
+
+	"{{.ModulePath}}/domain"
+)
+
+type UserRepository struct {
+	sqliteDB *sql.DB
+}
+
+// NewUserRepository will create an object that represent the user.Repository interface
+func NewUserRepository(db *sql.DB) *UserRepository {
+	return &UserRepository{
+        sqliteDB: db,
+    }
+}
+
+// GetUserByUserID will get user by userID
+func (u *UserRepository) GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error) {
+	var (
+		user *domain.User
+		query = "SELECT id, name FROM users WHERE id = ? LIMIT 1"
+		err  error
+	)
+
+	err = u.mysqlDB.QueryRowContext(ctx, query, userID).Scan(&user.ID, &user.Name)
+
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+        return &domain.User{}, nil
+    }
+
+    return user, err
+}
