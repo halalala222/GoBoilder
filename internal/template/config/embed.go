@@ -17,7 +17,5 @@ var DatabaseSQLSQLiteConfigTemplate []byte
 //go:embed mongo_driver_mongodb.go.tmpl
 var MongoDriverMongoDBConfigTemplate []byte
 
-//go:embed database_sql_sqlite.go.tmpl
-
 //go:embed gin.go.tmpl
 var GinConfigTemplate []byte
