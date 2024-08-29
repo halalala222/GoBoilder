@@ -73,6 +73,7 @@ func (e *Executor) Execute() {
 		build.WithLoggerLibrary(huhModelInfo.LoggerLibrary),
 		build.WithModulePath(huhModelInfo.ModulePath),
 		build.WithDB(huhModelInfo.DB),
+		build.WithDBLibrary(huhModelInfo.DBLibrary),
 	)
 
 	wg := sync.WaitGroup{}
