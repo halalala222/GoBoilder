@@ -21,7 +21,7 @@ func GenerateAllBuilder(options ...Option) []Builder {
 		NewProjectBuilder(opts.projectName),
 		NewLoggerBuilder(opts.projectName, opts.loggerLibrary, opts.modulePath),
 		NewDomainBuilder(opts.projectName),
-		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db),
+		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary),
 	}
 }
 
