@@ -1,11 +1,12 @@
 package build
 
 type buildOptions struct {
-	projectName   string
-	loggerLibrary string
-	modulePath    string
-	db            string
-	dbLibrary     string
+	projectName    string
+	loggerLibrary  string
+	modulePath     string
+	db             string
+	dbLibrary      string
+	configFileType string
 }
 
 type Option func(*buildOptions)
@@ -43,6 +44,12 @@ func WithDB(db string) Option {
 func WithDBLibrary(dbLibrary string) Option {
 	return func(o *buildOptions) {
 		o.dbLibrary = dbLibrary
+	}
+}
+
+func WithConfigFileType(configFileType string) Option {
+	return func(o *buildOptions) {
+		o.configFileType = configFileType
 	}
 }
 
