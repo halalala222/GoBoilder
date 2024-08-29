@@ -33,7 +33,7 @@ func newProjectNameInputGroup() *huh.Group {
 	)
 }
 
-func newDBFormHubGroup() *huh.Group {
+func newDBFormHuhGroup() *huh.Group {
 	return huh.NewGroup(
 		huh.NewSelect[string]().
 			Value(&info.DB).
@@ -49,6 +49,17 @@ func newDBFormHubGroup() *huh.Group {
 			}, &info.DB).
 			Title(constants.ChoiceDBLibraryTitle).
 			Description(constants.ChoiceDBLibraryDescription),
+	)
+}
+
+func newConfigHuhGroup() *huh.Group {
+	return huh.NewGroup(
+		huh.NewSelect[string]().
+			Key(constants.ConfigFileTypeKey).
+			Value(&info.ConfigFileType).
+			Options(huh.NewOptions(config.GetSupportedConfigFileTypes()...)...).
+			Title(constants.ChoiceConfigFileTypeTitle).
+			Description(constants.ChoiceConfigFileTypeDescription),
 	)
 }
 
