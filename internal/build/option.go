@@ -5,6 +5,7 @@ type buildOptions struct {
 	loggerLibrary string
 	modulePath    string
 	db            string
+	dbLibrary     string
 }
 
 type Option func(*buildOptions)
@@ -36,6 +37,12 @@ func WithModulePath(modulePath string) Option {
 func WithDB(db string) Option {
 	return func(o *buildOptions) {
 		o.db = db
+	}
+}
+
+func WithDBLibrary(dbLibrary string) Option {
+	return func(o *buildOptions) {
+		o.dbLibrary = dbLibrary
 	}
 }
 
