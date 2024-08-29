@@ -16,13 +16,16 @@ import (
 )
 
 var (
-	host   = os.Getenv("DB_HOST")
-	port   = os.Getenv("DB_PORT")
 	db     *mongo.Client
 	dbOnce sync.Once
 )
 
 func DB() *mongo.Client {
+    var (
+        host = viper.GetString("db.host")
+        port = viper.GetString("db.port")
+    )
+
 	dbOnce.Do(func() {
 		var err error
 

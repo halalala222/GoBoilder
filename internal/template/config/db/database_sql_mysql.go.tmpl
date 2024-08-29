@@ -11,15 +11,22 @@ import (
 )
 
 var (
-	dns    string
 	db     *sql.DB
 	dbOnce sync.Once
 )
 
 func DB() *sql.DB {
+    var (
+        dbName = viper.GetString("db.database")
+        password = viper.GetString("db.password")
+        username = viper.GetString("db.username")
+        port = viper.GetString("db.port")
+        host = viper.GetString("db.host")
+    )
+
 	dbOnce.Do(func() {
 		var err error
-		if db, err = sql.Open("mysql", dns); err != nil {
+		if db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbName)); err != nil {
 			panic(err)
 		}
 	})

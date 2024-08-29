@@ -5,13 +5,13 @@ import (
 	"sync"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/spf13/viper"
 
 	pkgLog "{{.ModulePath}}/internal/log"
 	pkgLogger "{{.ModulePath}}/pkg/log"
 )
 
 var (
-	dns    string
 	db     *sql.DB
 	dbOnce sync.Once
 )
@@ -19,7 +19,7 @@ var (
 func DB() *sql.DB {
 	dbOnce.Do(func() {
 		var err error
-		if db, err = sql.Open("sqlite3", dns); err != nil {
+		if db, err = sql.Open("sqlite3", viper.GetString("db.url")); err != nil {
 			panic(err)
 		}
 	})

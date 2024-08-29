@@ -13,17 +13,20 @@ import (
 )
 
 var (
-	database = os.Getenv("DB_DATABASE")
-	password = os.Getenv("DB_PASSWORD")
-	username = os.Getenv("DB_USERNAME")
-	port     = os.Getenv("DB_PORT")
-	host     = os.Getenv("DB_HOST")
-	schema   = os.Getenv("DB_SCHEMA")
 	db       *sql.DB
 	dbOnce   sync.Once
 )
 
 func DB() *sql.DB {
+    var (
+        database = viper.GetString("db.database")
+        password = viper.GetString("db.password")
+        username = viper.GetString("db.username")
+        port = viper.GetString("db.port")
+        host = viper.GetString("db.host")
+        schema = viper.GetString("db.schema")
+    )
+
 	dbOnce.Do(func() {
 		connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
 		var err error
