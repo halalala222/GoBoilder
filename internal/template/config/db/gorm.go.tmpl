@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-    {{ if eq .DB "mysql" }}"gorm.io/driver/mysql" {{else if eq .DB "postgres" }}"gorm.io/driver/postgres"{{ else if eq .DB "sqlite" }}"gorm.io/driver/sqlite"{{ end }}
+    {{ if eq .DB "MySQL" }}_ "gorm.io/driver/mysql" {{else if eq .DB "PostgreSQL" }}_ "gorm.io/driver/postgres"{{ else if eq .DB "SQLite" }}_ "gorm.io/driver/sqlite"{{ end }}
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
