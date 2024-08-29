@@ -3,39 +3,41 @@ package build
 import (
 	"path/filepath"
 
-	dbConfig "github.com/halalala222/GoBoilder/internal/config"
+	"github.com/halalala222/GoBoilder/internal/config"
 	"github.com/halalala222/GoBoilder/internal/constants"
 )
 
 var _ Builder = &ConfigBuilder{}
 
 type ConfigBuilder struct {
-	projectName string
-	modulePath  string
-	db          string
-	library     string
+	projectName    string
+	modulePath     string
+	db             string
+	library        string
+	configFileType string
 }
 
 func (c *ConfigBuilder) String() string {
 	return "ConfigBuilder"
 }
 
-func NewConfigBuilder(projectName, modulePath, db, library string) *ConfigBuilder {
+func NewConfigBuilder(projectName, modulePath, db, library, configFileType string) *ConfigBuilder {
 	return &ConfigBuilder{
-		projectName: projectName,
-		modulePath:  modulePath,
-		db:          db,
-		library:     library,
+		projectName:    projectName,
+		modulePath:     modulePath,
+		db:             db,
+		library:        library,
+		configFileType: configFileType,
 	}
 }
 
 func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 	var (
 		err           error
-		dbLibraryInfo *dbConfig.DBLibraryInfo
+		dbLibraryInfo *config.DBLibraryInfo
 	)
 
-	if dbLibraryInfo, err = dbConfig.GetDBLibraryInfo(c.db, c.library); err != nil {
+	if dbLibraryInfo, err = config.GetDBLibraryInfo(c.db, c.library); err != nil {
 		return nil, err
 	}
 
@@ -44,8 +46,51 @@ func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 		template: dbLibraryInfo.Template,
 		data: &struct {
 			ModulePath string
+			DB         string
 		}{
 			ModulePath: c.modulePath,
+			DB:         c.db,
+		},
+	}, nil
+}
+
+func (c *ConfigBuilder) newConfigBuilder() *templateFileBuilder {
+
+	return &templateFileBuilder{
+		fileName: constants.ConfigFileName,
+		template: config.GetConfigTemplate(),
+		data: &struct {
+			ConfigFileType string
+			ProjectName    string
+		}{
+			ConfigFileType: c.configFileType,
+			ProjectName:    c.projectName,
+		},
+	}
+}
+
+func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
+	var (
+		err                error
+		configFileTemplate config.FileTemplate
+		configFileName     string
+	)
+
+	if configFileTemplate, err = config.GetConfigFileTemplate(c.configFileType); err != nil {
+		return nil, err
+	}
+
+	if configFileName, err = config.GetConfigFileName(c.configFileType); err != nil {
+		return nil, err
+	}
+
+	return &templateFileBuilder{
+		fileName: configFileName,
+		template: configFileTemplate.Build(),
+		data: &struct {
+			DB string
+		}{
+			DB: c.db,
 		},
 	}, nil
 }
@@ -54,6 +99,8 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 	var (
 		allConfigFileBuilder = make([]*templateFileBuilder, 0, 3)
 		dbConfigFileBuilder  *templateFileBuilder
+		configBuilder        = c.newConfigBuilder()
+		configFileBuilder    *templateFileBuilder
 		err                  error
 	)
 
@@ -61,7 +108,13 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 		return nil, err
 	}
 
+	if configFileBuilder, err = c.getConfigFileBuilder(); err != nil {
+		return nil, err
+	}
+
 	allConfigFileBuilder = append(allConfigFileBuilder, dbConfigFileBuilder)
+	allConfigFileBuilder = append(allConfigFileBuilder, configBuilder)
+	allConfigFileBuilder = append(allConfigFileBuilder, configFileBuilder)
 
 	return allConfigFileBuilder, nil
 }
