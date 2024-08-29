@@ -74,6 +74,7 @@ func (e *Executor) Execute() {
 		build.WithModulePath(huhModelInfo.ModulePath),
 		build.WithDB(huhModelInfo.DB),
 		build.WithDBLibrary(huhModelInfo.DBLibrary),
+		build.WithConfigFileType(huhModelInfo.ConfigFileType),
 	)
 
 	wg := sync.WaitGroup{}
