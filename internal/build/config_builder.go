@@ -1,7 +1,10 @@
 package build
 
 import (
+	"path/filepath"
+
 	dbConfig "github.com/halalala222/GoBoilder/internal/config"
+	"github.com/halalala222/GoBoilder/internal/constants"
 )
 
 var _ Builder = &ConfigBuilder{}
@@ -39,6 +42,11 @@ func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 	return &templateFileBuilder{
 		fileName: dbLibraryInfo.FileName,
 		template: dbLibraryInfo.Template,
+		data: &struct {
+			ModulePath string
+		}{
+			ModulePath: c.modulePath,
+		},
 	}, nil
 }
 
@@ -69,7 +77,7 @@ func (c *ConfigBuilder) Build() error {
 	}
 
 	for _, fileBuild := range fileBuilder {
-		if err = fileBuild.build(c.projectName); err != nil {
+		if err = fileBuild.build(filepath.Join(c.projectName, constants.ProjectConfigPkgPath)); err != nil {
 			return err
 		}
 	}
