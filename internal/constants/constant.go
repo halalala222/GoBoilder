@@ -47,6 +47,7 @@ const (
 	ProjectInternalPkgLogPath = "/internal/log"
 	ProjectDomainPkgPath      = "/domain"
 	ProjectConfigPkgPath      = "/internal/config"
+	ProjectRepositoryPkgPath  = "/internal/repository"
 
 	ConfigFileTypeKey               = "config_file_type"
 	ChoiceConfigFileTypeTitle       = "Choose your config file type"
@@ -66,6 +67,7 @@ const (
 	DatabaseSQLPostgreSQLConfigFileName = "postgresql.go"
 	DatabaseSQLSQLiteConfigFileName     = "sqlite.go"
 	MongoDriverMongoDBConfigFileName    = "mongodb.go"
+	RepositoryFileName                  = "user.go"
 
 	DatabaseLibraryGorm        = "gorm"
 	DatabaseLibraryMongoDriver = "mongo-driver"
