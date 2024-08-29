@@ -69,7 +69,8 @@ func NewModel() Model {
 
 	m.form = huh.NewForm(
 		newProjectNameInputGroup(),
-		newDBFormHubGroup(),
+		newDBFormHuhGroup(),
+		newConfigHuhGroup(),
 		newFormHuhGroup(),
 	).
 		WithWidth(50).
@@ -298,6 +299,7 @@ type Info struct {
 	HTTPFramework    string
 	DB               string
 	DBLibrary        string
+	ConfigFileType   string
 }
 
 func (m Model) GetInfo() *Info {
