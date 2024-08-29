@@ -23,24 +23,24 @@ func NewDomainBuilder(projectName string) *DomainBuilder {
 	}
 }
 
-func newUserFileBuilder() *templateFileBuilder {
+func (d *DomainBuilder) newUserFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.DomainUserFileNae,
 		template: domain.UserTemplate,
 	}
 }
 
-func newErrorsFileBuilder() *templateFileBuilder {
+func (d *DomainBuilder) newErrorsFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.DomainErrorsFileName,
 		template: domain.ErrorsTemplate,
 	}
 }
 
-func getAllDomainFileBuilder() []*templateFileBuilder {
+func (d *DomainBuilder) getAllDomainFileBuilder() []*templateFileBuilder {
 	return []*templateFileBuilder{
-		newUserFileBuilder(),
-		newErrorsFileBuilder(),
+		d.newUserFileBuilder(),
+		d.newErrorsFileBuilder(),
 	}
 }
 
@@ -49,7 +49,7 @@ func (d *DomainBuilder) Build() error {
 		err error
 	)
 
-	for _, fileBuild := range getAllDomainFileBuilder() {
+	for _, fileBuild := range d.getAllDomainFileBuilder() {
 		if err = fileBuild.build(filepath.Join(d.projectName, constants.ProjectDomainPkgPath)); err != nil {
 			return err
 		}

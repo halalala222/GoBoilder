@@ -27,51 +27,51 @@ func NewLoggerBuilder(projectName, library, modulePath string) *LoggerBuilder {
 	}
 }
 
-func newLoggerFileBuilder() *templateFileBuilder {
+func (l *LoggerBuilder) newLoggerFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.LoggerFileNae,
 		template: logger.TemplateLogger(),
 	}
 }
 
-func newLoggerLibraryFileBuilder(library string) *templateFileBuilder {
+func (l *LoggerBuilder) newLoggerLibraryFileBuilder() *templateFileBuilder {
 	var (
 		libraryTemplate logger.LibraryTemplate
 		err             error
 	)
 
-	if libraryTemplate, err = logger.GetLibraryTemplate(library); err != nil {
+	if libraryTemplate, err = logger.GetLibraryTemplate(l.library); err != nil {
 		return nil
 	}
 
 	return &templateFileBuilder{
-		fileName: logger.GetLoggerLibraryFileName(library),
+		fileName: logger.GetLoggerLibraryFileName(l.library),
 		template: libraryTemplate.Build(),
 	}
 }
 
-func newLogFileBuilder(modulePath string) *templateFileBuilder {
+func (l *LoggerBuilder) newLogFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.LogFileName,
 		template: logger.TemplateLog(),
 		data: &struct {
 			ModulePath string
 		}{
-			ModulePath: modulePath,
+			ModulePath: l.modulePath,
 		},
 	}
 }
 
-func getAllPkgLoggerFileBuilder(library string) []*templateFileBuilder {
+func (l *LoggerBuilder) getAllPkgLoggerFileBuilder() []*templateFileBuilder {
 	return []*templateFileBuilder{
-		newLoggerFileBuilder(),
-		newLoggerLibraryFileBuilder(library),
+		l.newLoggerFileBuilder(),
+		l.newLoggerLibraryFileBuilder(),
 	}
 }
 
-func getAllInternalPkgLoggerFileBuilder(modulePath string) []*templateFileBuilder {
+func (l *LoggerBuilder) getAllInternalPkgLoggerFileBuilder() []*templateFileBuilder {
 	return []*templateFileBuilder{
-		newLogFileBuilder(modulePath),
+		l.newLogFileBuilder(),
 	}
 }
 
@@ -80,13 +80,13 @@ func (l *LoggerBuilder) Build() error {
 		err error
 	)
 
-	for _, fileBuild := range getAllPkgLoggerFileBuilder(l.library) {
+	for _, fileBuild := range l.getAllPkgLoggerFileBuilder() {
 		if err = fileBuild.build(filepath.Join(l.projectName, constants.ProjectLoggerPkgPath)); err != nil {
 			return err
 		}
 	}
 
-	for _, fileBuild := range getAllInternalPkgLoggerFileBuilder(l.modulePath) {
+	for _, fileBuild := range l.getAllInternalPkgLoggerFileBuilder() {
 		if err = fileBuild.build(filepath.Join(l.projectName, constants.ProjectInternalPkgLogPath)); err != nil {
 			return err
 		}

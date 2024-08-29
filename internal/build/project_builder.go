@@ -21,32 +21,32 @@ func NewProjectBuilder(projectName string) *ProjectBuilder {
 	}
 }
 
-func newGitIgnoreFileBuilder() *templateFileBuilder {
+func (p *ProjectBuilder) newGitIgnoreFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.GitIgnoreFileName,
 		template: project.GitIgnoreTemplate,
 	}
 }
 
-func newREADMEFileBuilder() *templateFileBuilder {
+func (p *ProjectBuilder) newREADMEFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.READEMEFileName,
 		template: project.ReadmeTemplate,
 	}
 }
 
-func newMakefileFileBuilder() *templateFileBuilder {
+func (p *ProjectBuilder) newMakefileFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
 		fileName: constants.MakefileFileName,
 		template: project.MakefileTemplate,
 	}
 }
 
-func getAllProjectFileBuilder() []*templateFileBuilder {
+func (p *ProjectBuilder) getAllProjectFileBuilder() []*templateFileBuilder {
 	return []*templateFileBuilder{
-		newGitIgnoreFileBuilder(),
-		newREADMEFileBuilder(),
-		newMakefileFileBuilder(),
+		p.newGitIgnoreFileBuilder(),
+		p.newREADMEFileBuilder(),
+		p.newMakefileFileBuilder(),
 	}
 }
 
@@ -55,7 +55,7 @@ func (p *ProjectBuilder) Build() error {
 		err error
 	)
 
-	for _, fileBuild := range getAllProjectFileBuilder() {
+	for _, fileBuild := range p.getAllProjectFileBuilder() {
 		if err = fileBuild.build(p.projectName); err != nil {
 			return err
 		}
