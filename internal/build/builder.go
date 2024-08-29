@@ -54,14 +54,14 @@ type templateFileBuilder struct {
 	data     any
 }
 
-func (t *templateFileBuilder) build(projectName string) error {
+func (t *templateFileBuilder) build(filePath string) error {
 	var (
 		err  error
 		tmpl *template.Template
 		file *os.File
 	)
 
-	if file, err = os.Create(filepath.Join(projectName, t.fileName)); err != nil {
+	if file, err = os.Create(filepath.Join(filePath, t.fileName)); err != nil {
 		return err
 	}
 
