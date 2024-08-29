@@ -19,4 +19,6 @@ var (
 
 	ErrDBNotSupported        = errors.New("database not supported")
 	ErrDBLibraryNotSupported = errors.New("database library not supported")
+
+	ErrUnsupportedFileType = errors.New("unsupported file type")
 )

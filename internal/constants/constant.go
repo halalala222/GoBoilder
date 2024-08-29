@@ -48,6 +48,10 @@ const (
 	ProjectDomainPkgPath      = "/domain"
 	ProjectConfigPkgPath      = "/internal/config"
 
+	ConfigFileTypeKey               = "config_file_type"
+	ChoiceConfigFileTypeTitle       = "Choose your config file type"
+	ChoiceConfigFileTypeDescription = "This will determine your config file type"
+
 	GitIgnoreFileName                   = ".gitignore"
 	READEMEFileName                     = "README.md"
 	MakefileFileName                    = "Makefile"
@@ -71,4 +75,14 @@ const (
 	DataBasePostgreSQL = "PostgreSQL"
 	DataBaseSQLite     = "SQLite"
 	DataBaseMongoDB    = "MongoDB"
+
+	ConfigFileName     = "config.go"
+	YAMLConfigFileType = "yaml"
+	YAMLConfigFileName = "config.yaml"
+	JSONConfigFileType = "json"
+	JSONConfigFileName = "config.json"
+	TOMLConfigFileType = "toml"
+	TOMLConfigFileName = "config.toml"
+	ENVConfigFileType  = "env"
+	ENVConfigFileName  = ".env"
 )
