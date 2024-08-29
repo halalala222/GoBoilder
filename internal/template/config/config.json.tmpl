@@ -1,0 +1,34 @@
+{
+    "server": {
+        "port": 9030
+    },
+    {{ if eq .DB "MySQL" }}
+    "db": {
+        "host": "localhost",
+        "port": 3306,
+        "database": "go_boilder",
+        "username": "liooooo",
+        "password": "password1234"
+    }
+    {{ else if eq .DB "PostgreSQL" }}
+    "db": {
+        "host": "localhost",
+        "port": 5432,
+        "database": "go_boilder",
+        "username": "liooooo",
+        "password": "password1234",
+        "schema": "public"
+    }
+    {{ else if eq .DB "MongoDB" }}
+    "db": {
+        "host": "localhost",
+        "port": 27017,
+        "username": "liooooo",
+        "password": "password1234"
+    }
+    {{ else if eq .DB "SQLite" }}
+    "db": {
+        "url": "file::memory:?cache=shared"
+    }
+    {{ end }}
+}

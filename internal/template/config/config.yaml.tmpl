@@ -1,0 +1,28 @@
+server:
+  port: 9030
+
+{{ if eq .Database "MySQL" }}
+db:
+  host: "localhost"
+  port: 3306
+  database: "go_boilder"
+  username: "liooooo"
+  password: "password1234"
+{{ else if eq .Database "PostgreSQL" }}
+db:
+  host: "localhost"
+  port: 5432
+  database: "go_boilder"
+  username: "liooooo"
+  password: "password1234"
+  schema: "public"
+{{ else if eq .Database "MongoDB" }}
+db:
+  host: "localhost"
+  port: 27017
+  username: "liooooo"
+  password: "password1234"
+{{ else if eq .Database "SQLite" }}
+db:
+  url: "file::memory:?cache=shared"
+{{ end }}

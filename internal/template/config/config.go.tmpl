@@ -1,0 +1,29 @@
+package config
+
+import (
+    {{ if eq .ConfigFileType "env" }}
+    "strings"
+
+    "github.com/joho/godotenv"
+    "github.com/spf13/viper"
+    {{else}}
+    "github.com/spf13/viper"
+    {{end}}
+)
+
+func LoadConfig(configPath string) {
+    {{ if eq .ConfigFileType "env" }}
+	if err := godotenv.Load(configPath); err != nil {
+		panic(err)
+	}
+	{{end}}
+	viper.SetConfigFile(configPath)
+	viper.AutomaticEnv()
+	{{ if eq .ConfigFileType "env" }}
+	viper.SetEnvKeyReplacer(strings.NewReplacer(`.`, `_`))
+    viper.SetEnvPrefix("{{.ProjectName}}")
+    {{end}}
+	if err := viper.ReadInConfig(); err != nil {
+		panic(err)
+	}
+}
