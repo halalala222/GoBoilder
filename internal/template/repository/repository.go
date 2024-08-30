@@ -8,24 +8,31 @@ import (
 var db2FileInfo = map[string]*template.FileInfo{
 	constants.DataBaseMySQL + constants.DatabaseLibraryGorm: {
 		Template: gormTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBaseMySQL + constants.DatabaseLibraryDatabaseSQL: {
 		Template: mysqlTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryGorm: {
 		Template: gormTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryDatabaseSQL: {
 		Template: postgresqlTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryGorm: {
 		Template: gormTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryDatabaseSQL: {
 		Template: sqliteTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 	constants.DataBaseMongoDB + constants.DatabaseLibraryMongoDriver: {
 		Template: mongoDBTemplate,
+		FileName: constants.RepositoryFileName,
 	},
 }
 
