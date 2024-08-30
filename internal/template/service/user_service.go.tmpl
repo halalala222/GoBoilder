@@ -1,0 +1,23 @@
+package user
+
+import (
+	"context"
+
+	"{{.ModulePath}}/domain"
+)
+
+//go:generate mockery --name UserRepository
+type Repository interface {
+	GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error)
+}
+
+type Service struct {
+	userRepo Repository
+}
+
+// NewService will create a new article service object
+func NewService(userRepo Repository) *Service {
+	return &Service{
+		userRepo: userRepo,
+	}
+}
