@@ -1,6 +1,7 @@
 package build
 
 import (
+	"github.com/halalala222/GoBoilder/internal/template/service"
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
@@ -34,7 +35,7 @@ func (s *ServiceBuilder) serviceFileBuildInfo() *template.BuildInfo {
 
 func (s *ServiceBuilder) newServiceFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetServiceFileTemplateInfo(),
+		fileInfo:  service.GetServiceFileTemplateInfo(),
 		buildInfo: s.serviceFileBuildInfo(),
 	}
 }

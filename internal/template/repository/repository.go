@@ -1,36 +1,36 @@
-package template
+package repository
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/repository"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
-var db2FileInfo = map[string]*FileInfo{
+var db2FileInfo = map[string]*template.FileInfo{
 	constants.DataBaseMySQL + constants.DatabaseLibraryGorm: {
-		Template: repository.GormTemplate,
+		Template: gormTemplate,
 	},
 	constants.DataBaseMySQL + constants.DatabaseLibraryDatabaseSQL: {
-		Template: repository.MySQLTemplate,
+		Template: mysqlTemplate,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryGorm: {
-		Template: repository.GormTemplate,
+		Template: gormTemplate,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryDatabaseSQL: {
-		Template: repository.PostgreSQLTemplate,
+		Template: postgresqlTemplate,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryGorm: {
-		Template: repository.GormTemplate,
+		Template: gormTemplate,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryDatabaseSQL: {
-		Template: repository.SqliteTemplate,
+		Template: sqliteTemplate,
 	},
 	constants.DataBaseMongoDB + constants.DatabaseLibraryMongoDriver: {
-		Template: repository.MongoDBTemplate,
+		Template: mongoDBTemplate,
 	},
 }
 
 // GetRepositoryFileTemplateInfo returns the repository file template for the given database and library.
-func GetRepositoryFileTemplateInfo(database, dbLibrary string) (*FileInfo, error) {
+func GetRepositoryFileTemplateInfo(database, dbLibrary string) (*template.FileInfo, error) {
 	if fileInfo, ok := db2FileInfo[database+dbLibrary]; ok {
 		return fileInfo, nil
 	}

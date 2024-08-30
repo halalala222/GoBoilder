@@ -5,16 +5,16 @@ import (
 )
 
 //go:embed config.go.tmpl
-var Template []byte
+var loaderTemplate []byte
 
 //go:embed config.toml.tmpl
-var TOMLTemplate []byte
+var tomlTemplate []byte
 
 //go:embed config.yaml.tmpl
-var YAMLTemplate []byte
+var yamlTemplate []byte
 
 //go:embed config.json.tmpl
-var JSONTemplate []byte
+var jsonTemplate []byte
 
 //go:embed config.env.tmpl
-var ENVTemplate []byte
+var envTemplate []byte

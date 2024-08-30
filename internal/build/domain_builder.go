@@ -1,6 +1,7 @@
 package build
 
 import (
+	"github.com/halalala222/GoBoilder/internal/template/domain"
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
@@ -25,7 +26,7 @@ func NewDomainBuilder(projectName string) *DomainBuilder {
 
 func (d *DomainBuilder) newUserFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo: template.GetUserFileTemplateInfo(),
+		fileInfo: domain.GetUserFileTemplateInfo(),
 		buildInfo: &template.BuildInfo{
 			FilePath: filepath.Join(d.projectName, constants.ProjectDomainPkgPath),
 			Data:     nil,
@@ -35,7 +36,7 @@ func (d *DomainBuilder) newUserFileBuilder() *templateFileBuilder {
 
 func (d *DomainBuilder) newErrorsFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo: template.GetErrorsFileTemplateInfo(),
+		fileInfo: domain.GetErrorsFileTemplateInfo(),
 		buildInfo: &template.BuildInfo{
 			FilePath: filepath.Join(d.projectName, constants.ProjectDomainPkgPath),
 			Data:     nil,

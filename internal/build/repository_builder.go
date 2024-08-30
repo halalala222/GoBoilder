@@ -1,6 +1,7 @@
 package build
 
 import (
+	"github.com/halalala222/GoBoilder/internal/template/repository"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,7 +49,7 @@ func (r *RepositoryBuilder) newRepositoryFileBuilder() (*templateFileBuilder, er
 		fileInfo *template.FileInfo
 	)
 
-	if fileInfo, err = template.GetRepositoryFileTemplateInfo(r.db, r.dbLibrary); err != nil {
+	if fileInfo, err = repository.GetRepositoryFileTemplateInfo(r.db, r.dbLibrary); err != nil {
 		return nil, err
 	}
 

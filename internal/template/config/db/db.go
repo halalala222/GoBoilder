@@ -1,8 +1,8 @@
-package template
+package db
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/config/db"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
 var supportedDB2DBLibrary = map[string][]string{
@@ -12,33 +12,33 @@ var supportedDB2DBLibrary = map[string][]string{
 	constants.DataBaseMongoDB:    {constants.DatabaseLibraryMongoDriver},
 }
 
-var supportedDBLibrary2FileInfo = map[string]*FileInfo{
+var supportedDBLibrary2FileInfo = map[string]*template.FileInfo{
 	constants.DataBaseMySQL + constants.DatabaseLibraryGorm: {
-		Template: db.GormConfigTemplate,
+		Template: GormConfigTemplate,
 		FileName: constants.GormConfigFileName,
 	},
 	constants.DataBaseMySQL + constants.DatabaseLibraryDatabaseSQL: {
-		Template: db.DatabaseSQLMySQLConfigTemplate,
+		Template: DatabaseSQLMySQLConfigTemplate,
 		FileName: constants.DatabaseSQLMySQLConfigFileName,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryGorm: {
-		Template: db.GormConfigTemplate,
+		Template: GormConfigTemplate,
 		FileName: constants.GormConfigFileName,
 	},
 	constants.DataBasePostgreSQL + constants.DatabaseLibraryDatabaseSQL: {
-		Template: db.DatabaseSQLPostgreSQLConfigTemplate,
+		Template: DatabaseSQLPostgreSQLConfigTemplate,
 		FileName: constants.DatabaseSQLPostgreSQLConfigFileName,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryGorm: {
-		Template: db.GormConfigTemplate,
+		Template: GormConfigTemplate,
 		FileName: constants.GormConfigFileName,
 	},
 	constants.DataBaseSQLite + constants.DatabaseLibraryDatabaseSQL: {
-		Template: db.DatabaseSQLSQLiteConfigTemplate,
+		Template: DatabaseSQLSQLiteConfigTemplate,
 		FileName: constants.DatabaseSQLSQLiteConfigFileName,
 	},
 	constants.DataBaseMongoDB + constants.DatabaseLibraryMongoDriver: {
-		Template: db.MongoDriverMongoDBConfigTemplate,
+		Template: MongoDriverMongoDBConfigTemplate,
 		FileName: constants.MongoDriverMongoDBConfigFileName,
 	},
 }
@@ -60,7 +60,7 @@ func GetSupportedDatabases() []string {
 }
 
 // GetDBLibraryFileTemplateInfo returns the FileInfo for the db library file template.
-func GetDBLibraryFileTemplateInfo(database, library string) (*FileInfo, error) {
+func GetDBLibraryFileTemplateInfo(database, library string) (*template.FileInfo, error) {
 	if fileInfo, ok := supportedDBLibrary2FileInfo[database+library]; ok {
 		return fileInfo, nil
 	}

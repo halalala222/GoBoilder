@@ -2,6 +2,9 @@ package build
 
 import (
 	"github.com/halalala222/GoBoilder/internal/template"
+	"github.com/halalala222/GoBoilder/internal/template/config"
+	"github.com/halalala222/GoBoilder/internal/template/config/db"
+	"github.com/halalala222/GoBoilder/internal/template/config/http"
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
@@ -76,7 +79,7 @@ func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 		fileInfo *template.FileInfo
 	)
 
-	if fileInfo, err = template.GetDBLibraryFileTemplateInfo(c.db, c.library); err != nil {
+	if fileInfo, err = db.GetDBLibraryFileTemplateInfo(c.db, c.library); err != nil {
 		return nil, err
 	}
 
@@ -88,7 +91,7 @@ func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 
 func (c *ConfigBuilder) newConfigLoaderFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetConfigLoaderFileTemplateInfo(),
+		fileInfo:  config.GetConfigLoaderFileTemplateInfo(),
 		buildInfo: c.configLoaderFileBuildInfo(),
 	}
 }
@@ -99,7 +102,7 @@ func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
 		fileInfo *template.FileInfo
 	)
 
-	if fileInfo, err = template.GetConfigFileTemplateInfo(c.configFileType); err != nil {
+	if fileInfo, err = config.GetConfigFileTemplateInfo(c.configFileType); err != nil {
 		return nil, err
 	}
 
@@ -115,7 +118,7 @@ func (c *ConfigBuilder) getHTTPFrameFilerBuilder() (*templateFileBuilder, error)
 		fileInfo *template.FileInfo
 	)
 
-	if fileInfo, err = template.GetHTTPFrameFileTemplateInfo(c.httpFramework); err != nil {
+	if fileInfo, err = http.GetHTTPFrameFileTemplateInfo(c.httpFramework); err != nil {
 		return nil, err
 	}
 

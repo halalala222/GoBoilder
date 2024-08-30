@@ -1,31 +1,31 @@
-package template
+package config
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/config"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
-var supportedConfigFileType = map[string]*FileInfo{
+var supportedConfigFileType = map[string]*template.FileInfo{
 	constants.YAMLConfigFileType: {
-		Template: config.YAMLTemplate,
+		Template: yamlTemplate,
 		FileName: constants.YAMLConfigFileName,
 	},
 	constants.TOMLConfigFileType: {
-		Template: config.TOMLTemplate,
+		Template: tomlTemplate,
 		FileName: constants.TOMLConfigFileName,
 	},
 	constants.JSONConfigFileType: {
-		Template: config.JSONTemplate,
+		Template: jsonTemplate,
 		FileName: constants.JSONConfigFileName,
 	},
 	constants.ENVConfigFileType: {
-		Template: config.ENVTemplate,
+		Template: envTemplate,
 		FileName: constants.ENVConfigFileName,
 	},
 }
 
 // GetConfigFileTemplateInfo returns the FileInfo for the config file template.
-func GetConfigFileTemplateInfo(configFileType string) (*FileInfo, error) {
+func GetConfigFileTemplateInfo(configFileType string) (*template.FileInfo, error) {
 
 	if fileInfo, ok := supportedConfigFileType[configFileType]; ok {
 		return fileInfo, nil
@@ -46,9 +46,9 @@ func GetSupportedConfigFileTypes() []string {
 }
 
 // GetConfigLoaderFileTemplateInfo returns the FileInfo for the config loader file template.
-func GetConfigLoaderFileTemplateInfo() *FileInfo {
-	return &FileInfo{
-		Template: config.Template,
+func GetConfigLoaderFileTemplateInfo() *template.FileInfo {
+	return &template.FileInfo{
+		Template: loaderTemplate,
 		FileName: constants.ConfigLoaderFileName,
 	}
 }

@@ -1,41 +1,41 @@
-package template
+package logger
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/logger"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
-var supportedLoggerLibraries = map[string]*FileInfo{
+var supportedLoggerLibraries = map[string]*template.FileInfo{
 	constants.ZapLoggerLibrary: {
-		Template: logger.SlogLoggerTemplate,
+		Template: slogLoggerTemplate,
 		FileName: constants.ZapLoggerFileName,
 	},
 	constants.SlogLoggerLibrary: {
-		Template: logger.ZapLoggerTemplate,
+		Template: zapLoggerTemplate,
 		FileName: constants.SlogLoggerFileName,
 	},
 }
 
 // GetInternalLogFileTemplateInfo returns the internal log file template.
-func GetInternalLogFileTemplateInfo() *FileInfo {
-	return &FileInfo{
-		Template: logger.InternalLog,
+func GetInternalLogFileTemplateInfo() *template.FileInfo {
+	return &template.FileInfo{
+		Template: internalLog,
 		FileName: constants.InternalLogFileName,
 	}
 }
 
 // GetPkgLoggerFileTemplateInfo returns the package logger file template.
-func GetPkgLoggerFileTemplateInfo() *FileInfo {
-	return &FileInfo{
-		Template: logger.PkgLogger,
+func GetPkgLoggerFileTemplateInfo() *template.FileInfo {
+	return &template.FileInfo{
+		Template: pkgLogger,
 		FileName: constants.PkgLoggerFileName,
 	}
 }
 
 // GetLoggerLibraryFileTemplateInfo returns the LoggerTemplateInfo for the given library.
-func GetLoggerLibraryFileTemplateInfo(library string) (*FileInfo, error) {
+func GetLoggerLibraryFileTemplateInfo(library string) (*template.FileInfo, error) {
 	var (
-		loggerTemplateInfo *FileInfo
+		loggerTemplateInfo *template.FileInfo
 		ok                 bool
 	)
 

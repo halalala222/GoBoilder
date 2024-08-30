@@ -1,6 +1,7 @@
 package build
 
 import (
+	"github.com/halalala222/GoBoilder/internal/template/logger"
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
@@ -50,14 +51,14 @@ func (l *LoggerBuilder) loggerLibraryTemplateBuildInfo() *template.BuildInfo {
 
 func (l *LoggerBuilder) newPkgLoggerFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetPkgLoggerFileTemplateInfo(),
+		fileInfo:  logger.GetPkgLoggerFileTemplateInfo(),
 		buildInfo: l.pkgLoggerTemplateBuildInfo(),
 	}
 }
 
 func (l *LoggerBuilder) newInternalLoggerFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetInternalLogFileTemplateInfo(),
+		fileInfo:  logger.GetInternalLogFileTemplateInfo(),
 		buildInfo: l.internalLoggerTemplateBuildInfo(),
 	}
 }
@@ -68,7 +69,7 @@ func (l *LoggerBuilder) newLoggerLibraryFileBuilder() (*templateFileBuilder, err
 		err      error
 	)
 
-	if fileInfo, err = template.GetLoggerLibraryFileTemplateInfo(l.library); err != nil {
+	if fileInfo, err = logger.GetLoggerLibraryFileTemplateInfo(l.library); err != nil {
 		return nil, err
 	}
 

@@ -3,10 +3,10 @@ package project
 import _ "embed"
 
 //go:embed gitignore.tmpl
-var GitIgnoreTemplate []byte
+var gitIgnoreTemplate []byte
 
 //go:embed README.tmpl
-var ReadmeTemplate []byte
+var readmeTemplate []byte
 
 //go:embed Makefile.tmpl
-var MakefileTemplate []byte
+var makefileTemplate []byte

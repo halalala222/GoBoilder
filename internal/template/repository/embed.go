@@ -3,16 +3,16 @@ package repository
 import _ "embed"
 
 //go:embed gorm.go.tmpl
-var GormTemplate []byte
+var gormTemplate []byte
 
 //go:embed mongodb.go.tmpl
-var MongoDBTemplate []byte
+var mongoDBTemplate []byte
 
 //go:embed mysql.go.tmpl
-var MySQLTemplate []byte
+var mysqlTemplate []byte
 
 //go:embed postgresql.go.tmpl
-var PostgreSQLTemplate []byte
+var postgresqlTemplate []byte
 
 //go:embed sqlite.go.tmpl
-var SqliteTemplate []byte
+var sqliteTemplate []byte

@@ -2,6 +2,7 @@ package build
 
 import (
 	"github.com/halalala222/GoBoilder/internal/template"
+	"github.com/halalala222/GoBoilder/internal/template/project"
 )
 
 var _ Builder = &ProjectBuilder{}
@@ -43,21 +44,21 @@ func (p *ProjectBuilder) makefileTemplateBuildInfo() *template.BuildInfo {
 
 func (p *ProjectBuilder) newGitIgnoreFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetGitIgnoreFileInfo(),
+		fileInfo:  project.GetGitIgnoreFileInfo(),
 		buildInfo: p.gitIgnoreTemplateBuildInfo(),
 	}
 }
 
 func (p *ProjectBuilder) newREADMEFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetREADMEFileInfo(),
+		fileInfo:  project.GetREADMEFileInfo(),
 		buildInfo: p.readmeTemplateBuildInfo(),
 	}
 }
 
 func (p *ProjectBuilder) newMakefileFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileInfo:  template.GetMakefileFileInfo(),
+		fileInfo:  project.GetMakefileFileInfo(),
 		buildInfo: p.makefileTemplateBuildInfo(),
 	}
 }

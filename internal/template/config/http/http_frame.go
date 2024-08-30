@@ -1,31 +1,31 @@
-package template
+package http
 
 import (
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/config/http"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
-var supportedFrameworks = map[string]*FileInfo{
+var supportedFrameworks = map[string]*template.FileInfo{
 	constants.HTTPFrameworkGin: {
-		Template: http.GinConfigTemplate,
+		Template: GinConfigTemplate,
 		FileName: constants.HTTPFrameGinFileName,
 	},
 	constants.HTTPFrameworkEcho: {
-		Template: http.EchoConfigTemplate,
+		Template: EchoConfigTemplate,
 		FileName: constants.HTTPFrameEchoFileName,
 	},
 	constants.HTTPFrameworkFiber: {
-		Template: http.FiberConfigTemplate,
+		Template: FiberConfigTemplate,
 		FileName: constants.HTTPFrameFiberFileName,
 	},
 	constants.HTTPFrameworkChi: {
-		Template: http.ChiConfigTemplate,
+		Template: ChiConfigTemplate,
 		FileName: constants.HTTPFrameChiFileName,
 	},
 }
 
 // GetHTTPFrameFileTemplateInfo returns the FrameworkInfo for the given framework.
-func GetHTTPFrameFileTemplateInfo(framework string) (*FileInfo, error) {
+func GetHTTPFrameFileTemplateInfo(framework string) (*template.FileInfo, error) {
 	if frameworkInfo, ok := supportedFrameworks[framework]; ok {
 		return frameworkInfo, nil
 	}
