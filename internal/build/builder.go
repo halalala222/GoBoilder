@@ -4,9 +4,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"text/template"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
+	templatePkg "github.com/halalala222/GoBoilder/internal/template"
 )
 
 type Builder interface {
@@ -53,27 +53,8 @@ func AllDir(projectName string) error {
 }
 
 type templateFileBuilder struct {
-	fileName string
-	template []byte
-	data     any
-}
-
-func (t *templateFileBuilder) build(filePath string) error {
-	var (
-		err  error
-		tmpl *template.Template
-		file *os.File
-	)
-
-	if file, err = os.Create(filepath.Join(filePath, t.fileName)); err != nil {
-		return err
-	}
-
-	if tmpl, err = template.New(t.fileName).Parse(string(t.template)); err != nil {
-		return err
-	}
-
-	return tmpl.Execute(file, t.data)
+	fileInfo  *templatePkg.FileInfo
+	buildInfo *templatePkg.BuildInfo
 }
 
 func GoModInit(projectName string, modulePath string) error {
