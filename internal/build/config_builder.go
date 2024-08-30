@@ -55,9 +55,11 @@ func (c *ConfigBuilder) configLoaderFileBuildInfo() *template.BuildInfo {
 		Data: &struct {
 			ConfigFileType string
 			ProjectName    string
+			DB             string
 		}{
 			ConfigFileType: c.configFileType,
 			ProjectName:    c.projectName,
+			DB:             c.db,
 		},
 	}
 }
