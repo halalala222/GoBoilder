@@ -3,9 +3,11 @@ package model
 import (
 	"github.com/charmbracelet/huh"
 
-	"github.com/halalala222/GoBoilder/internal/config"
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/logger"
+	templateConfig "github.com/halalala222/GoBoilder/internal/template/config"
+	"github.com/halalala222/GoBoilder/internal/template/config/db"
+	"github.com/halalala222/GoBoilder/internal/template/config/http"
+	"github.com/halalala222/GoBoilder/internal/template/logger"
 	"github.com/halalala222/GoBoilder/internal/validation"
 )
 
@@ -37,14 +39,14 @@ func newDBFormHuhGroup() *huh.Group {
 		huh.NewSelect[string]().
 			Value(&info.DB).
 			Key(constants.DBKey).
-			Options(huh.NewOptions(config.GetSupportedDB()...)...).
+			Options(huh.NewOptions(db.GetSupportedDatabases()...)...).
 			Title(constants.ChoiceDBTitle).
 			Description(constants.ChoiceDBDescription),
 		huh.NewSelect[string]().
 			Value(&info.DBLibrary).
 			Key(constants.DBLibraryKey).
 			OptionsFunc(func() []huh.Option[string] {
-				return huh.NewOptions(config.GetDBLibraries(info.DB)...)
+				return huh.NewOptions(db.GetDBLibraries(info.DB)...)
 			}, &info.DB).
 			Title(constants.ChoiceDBLibraryTitle).
 			Description(constants.ChoiceDBLibraryDescription),
@@ -56,7 +58,7 @@ func newConfigHuhGroup() *huh.Group {
 		huh.NewSelect[string]().
 			Key(constants.ConfigFileTypeKey).
 			Value(&info.ConfigFileType).
-			Options(huh.NewOptions(config.GetSupportedConfigFileTypes()...)...).
+			Options(huh.NewOptions(templateConfig.GetSupportedConfigFileTypes()...)...).
 			Title(constants.ChoiceConfigFileTypeTitle).
 			Description(constants.ChoiceConfigFileTypeDescription),
 	)
@@ -67,14 +69,14 @@ func newFormHuhGroup() *huh.Group {
 		huh.NewSelect[string]().
 			Key(constants.LoggerKey).
 			Value(&info.LoggerLibrary).
-			Options(huh.NewOptions(logger.GetAllSupportedLibraries()...)...).
+			Options(huh.NewOptions(logger.GetSupportedLoggerLibraries()...)...).
 			Title(constants.ChoiceLoggerTitle).
 			Description(constants.ChoiceLoggerDescription),
 
 		huh.NewSelect[string]().
 			Key(constants.HTTPFrameKey).
 			Value(&info.HTTPFramework).
-			Options(huh.NewOptions(config.GetAllSupportedHTTPFrameworks()...)...).
+			Options(huh.NewOptions(http.GetAllSupportedHTTPFrameworks()...)...).
 			Title(constants.ChoiceHTTPFrameTitle).
 			Description(constants.ChoiceHTTPFrameDescription),
 
