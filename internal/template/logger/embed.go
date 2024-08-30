@@ -2,10 +2,10 @@ package logger
 
 import _ "embed"
 
-//go:embed logger.go.tmpl
+//go:embed pkg_logger.go.tmpl
 var Logger []byte
 
-//go:embed log.go.tmpl
+//go:embed internal_log.go.tmpl
 var Log []byte
 
 //go:embed zap_logger.go.tmpl
