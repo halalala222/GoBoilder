@@ -1,0 +1,44 @@
+package config
+
+import (
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+    "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+
+	"{{.ModulePath}}/internal/log"
+	logger "{{.ModulePath}}/pkg/log"
+)
+
+func NewEchoServer() *echo.Echo {
+	e := echo.New()
+
+	// Custom Logger Middleware
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `{"time":"${time_rfc3339}","remote_ip":"${remote_ip}",
+				"method":"${method}","uri":"${uri}","status":${status},
+				"latency_human":"${latency_human}","user_agent":"${user_agent}"}' + "\n"`,
+	}))
+
+	// Recovery Middleware
+	e.Use(middleware.Recover())
+
+	return e
+}
+
+func CloseServer(e *echo.Echo) {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM)
+	<-quit
+	log.Log().Info("Shutting down server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		log.Log().Fatal("Server forced to shut down", logger.Field{Key: "error", Value: err})
+	}
+	log.Log().Info("Server exited")
+}

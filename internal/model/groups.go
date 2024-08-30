@@ -5,7 +5,6 @@ import (
 
 	"github.com/halalala222/GoBoilder/internal/config"
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/http"
 	"github.com/halalala222/GoBoilder/internal/logger"
 	"github.com/halalala222/GoBoilder/internal/validation"
 )
@@ -75,7 +74,7 @@ func newFormHuhGroup() *huh.Group {
 		huh.NewSelect[string]().
 			Key(constants.HTTPFrameKey).
 			Value(&info.HTTPFramework).
-			Options(huh.NewOptions(http.GetAllSupportedHTTPFrameworks()...)...).
+			Options(huh.NewOptions(config.GetAllSupportedHTTPFrameworks()...)...).
 			Title(constants.ChoiceHTTPFrameTitle).
 			Description(constants.ChoiceHTTPFrameDescription),
 

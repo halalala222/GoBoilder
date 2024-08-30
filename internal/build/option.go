@@ -7,6 +7,7 @@ type buildOptions struct {
 	db             string
 	dbLibrary      string
 	configFileType string
+	httpFramework  string
 }
 
 type Option func(*buildOptions)
@@ -50,6 +51,12 @@ func WithDBLibrary(dbLibrary string) Option {
 func WithConfigFileType(configFileType string) Option {
 	return func(o *buildOptions) {
 		o.configFileType = configFileType
+	}
+}
+
+func WithHTTPFramework(httpFramework string) Option {
+	return func(o *buildOptions) {
+		o.httpFramework = httpFramework
 	}
 }
 

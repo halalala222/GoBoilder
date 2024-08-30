@@ -70,6 +70,10 @@ const (
 	MongoDriverMongoDBConfigFileName    = "mongodb.go"
 	RepositoryFileName                  = "user.go"
 	ServiceFileName                     = "service.go"
+	HTTPFrameChiFileName                = "chi.go"
+	HTTPFrameEchoFileName               = "echo.go"
+	HTTPFrameFiberFileName              = "fiber.go"
+	HTTPFrameGinFileName                = "gin.go"
 
 	DatabaseLibraryGorm        = "gorm"
 	DatabaseLibraryMongoDriver = "mongo-driver"
@@ -79,6 +83,11 @@ const (
 	DataBasePostgreSQL = "PostgreSQL"
 	DataBaseSQLite     = "SQLite"
 	DataBaseMongoDB    = "MongoDB"
+
+	HTTPFrameworkChi   = "chi"
+	HTTPFrameworkEcho  = "echo"
+	HTTPFrameworkFiber = "fiber"
+	HTTPFrameworkGin   = "gin"
 
 	ConfigFileName     = "config.go"
 	YAMLConfigFileType = "yaml"

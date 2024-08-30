@@ -15,19 +15,21 @@ type ConfigBuilder struct {
 	db             string
 	library        string
 	configFileType string
+	httpFramework  string
 }
 
 func (c *ConfigBuilder) String() string {
 	return "ConfigBuilder"
 }
 
-func NewConfigBuilder(projectName, modulePath, db, library, configFileType string) *ConfigBuilder {
+func NewConfigBuilder(projectName, modulePath, db, library, configFileType, httpFramework string) *ConfigBuilder {
 	return &ConfigBuilder{
 		projectName:    projectName,
 		modulePath:     modulePath,
 		db:             db,
 		library:        library,
 		configFileType: configFileType,
+		httpFramework:  httpFramework,
 	}
 }
 
@@ -95,10 +97,32 @@ func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
 	}, nil
 }
 
+func (c *ConfigBuilder) getHTTPFrameFilerBuilder() (*templateFileBuilder, error) {
+	var (
+		err           error
+		httpFrameInfo *config.FrameworkInfo
+	)
+
+	if httpFrameInfo, err = config.GetFrameworkInfo(c.httpFramework); err != nil {
+		return nil, err
+	}
+
+	return &templateFileBuilder{
+		fileName: httpFrameInfo.FileName,
+		template: httpFrameInfo.Template,
+		data: &struct {
+			ModulePath string
+		}{
+			ModulePath: c.modulePath,
+		},
+	}, nil
+}
+
 func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error) {
 	var (
 		allConfigFileBuilder = make([]*templateFileBuilder, 0, 3)
 		dbConfigFileBuilder  *templateFileBuilder
+		httpFrameFileBuilder *templateFileBuilder
 		configBuilder        = c.newConfigBuilder()
 		configFileBuilder    *templateFileBuilder
 		err                  error
@@ -108,11 +132,16 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 		return nil, err
 	}
 
+	if httpFrameFileBuilder, err = c.getHTTPFrameFilerBuilder(); err != nil {
+		return nil, err
+	}
+
 	if configFileBuilder, err = c.getConfigFileBuilder(); err != nil {
 		return nil, err
 	}
 
 	allConfigFileBuilder = append(allConfigFileBuilder, dbConfigFileBuilder)
+	allConfigFileBuilder = append(allConfigFileBuilder, httpFrameFileBuilder)
 	allConfigFileBuilder = append(allConfigFileBuilder, configBuilder)
 	allConfigFileBuilder = append(allConfigFileBuilder, configFileBuilder)
 

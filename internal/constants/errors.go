@@ -23,4 +23,6 @@ var (
 	ErrUnsupportedFileType = errors.New("unsupported file type")
 
 	ErrDBOrDBLibraryNotSupported = errors.New("database or database library not supported")
+
+	ErrUnsupportedHTTPFramework = errors.New("unsupported HTTP framework")
 )

@@ -1,0 +1,45 @@
+package config
+
+import (
+	"context"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
+	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+
+	"{{.ModulePath}}/internal/log"
+	logger "{{.ModulePath}}/pkg/log"
+)
+
+func NewFiberApp() *fiber.App {
+	// 创建 Fiber 实例
+	app := fiber.New()
+
+	// 自定义日志中间件
+	app.Use(fiberLogger.New(fiberLogger.Config{
+		Format:     "${ip} - [${time}] \"${method} ${path}\" ${status} ${latency} \" ${error}\n",
+		TimeFormat: time.RFC1123,
+		TimeZone:   "Local",
+	}))
+
+	return app
+}
+
+func CloseServer(app *fiber.App) {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM)
+	<-quit
+	log.Log().Info("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := app.ShutdownWithContext(ctx); err != nil {
+		log.Log().Fatal("Server forced to shut down", logger.Field{Key: "error", Value: err})
+	}
+
+	log.Log().Info("Server exited")
+}

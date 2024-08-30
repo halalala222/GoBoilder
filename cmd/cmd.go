@@ -75,6 +75,7 @@ func (e *Executor) Execute() {
 		build.WithDB(huhModelInfo.DB),
 		build.WithDBLibrary(huhModelInfo.DBLibrary),
 		build.WithConfigFileType(huhModelInfo.ConfigFileType),
+		build.WithHTTPFramework(huhModelInfo.HTTPFramework),
 	)
 
 	wg := sync.WaitGroup{}

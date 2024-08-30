@@ -21,7 +21,7 @@ func GenerateAllBuilder(options ...Option) []Builder {
 		NewProjectBuilder(opts.projectName),
 		NewLoggerBuilder(opts.projectName, opts.loggerLibrary, opts.modulePath),
 		NewDomainBuilder(opts.projectName),
-		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary, opts.configFileType),
+		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary, opts.configFileType, opts.httpFramework),
 		NewRepositoryBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary),
 		NewServiceBuilder(opts.projectName, opts.modulePath),
 	}
