@@ -1,13 +1,13 @@
 package build
 
 import (
-	"github.com/halalala222/GoBoilder/internal/template/repository"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
 	"github.com/halalala222/GoBoilder/internal/template"
+	"github.com/halalala222/GoBoilder/internal/template/repository"
 )
 
 var _ Builder = &RepositoryBuilder{}
@@ -32,9 +32,13 @@ func NewRepositoryBuilder(projectName, modulePath, db, dbLibrary string) *Reposi
 	}
 }
 
+func (r *RepositoryBuilder) getRepositoryDir() string {
+	return filepath.Join(r.projectName, constants.ProjectRepositoryPkgPath, strings.ToLower(r.db))
+}
+
 func (r *RepositoryBuilder) repositoryTemplateBuildInfo() *template.BuildInfo {
 	return &template.BuildInfo{
-		FilePath: filepath.Join(r.projectName, constants.ProjectRepositoryPkgPath, strings.ToLower(r.db)),
+		FilePath: r.getRepositoryDir(),
 		Data: &struct {
 			ModulePath string
 		}{
@@ -63,11 +67,7 @@ func (r *RepositoryBuilder) Build() error {
 	var (
 		err                   error
 		repositoryFileBuilder *templateFileBuilder
-		dirPath               = filepath.Join(
-			r.projectName,
-			constants.ProjectRepositoryPkgPath,
-			strings.ToLower(r.db),
-		)
+		dirPath               = r.getRepositoryDir()
 	)
 
 	if err = os.MkdirAll(dirPath, os.ModePerm); err != nil {
