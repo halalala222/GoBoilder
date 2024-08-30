@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/repository"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
 var _ Builder = &RepositoryBuilder{}
@@ -31,24 +31,30 @@ func NewRepositoryBuilder(projectName, modulePath, db, dbLibrary string) *Reposi
 	}
 }
 
-func (r *RepositoryBuilder) newRepositoryFileBuilder() (*templateFileBuilder, error) {
-	var (
-		err                    error
-		repositoryFileTemplate repository.Template
-	)
-
-	if repositoryFileTemplate, err = repository.GetRepositoryTemplate(r.db, r.dbLibrary); err != nil {
-		return nil, err
-	}
-
-	return &templateFileBuilder{
-		fileName: constants.RepositoryFileName,
-		template: repositoryFileTemplate.Build(),
-		data: &struct {
+func (r *RepositoryBuilder) repositoryTemplateBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: filepath.Join(r.projectName, constants.ProjectRepositoryPkgPath, strings.ToLower(r.db)),
+		Data: &struct {
 			ModulePath string
 		}{
 			ModulePath: r.modulePath,
 		},
+	}
+}
+
+func (r *RepositoryBuilder) newRepositoryFileBuilder() (*templateFileBuilder, error) {
+	var (
+		err      error
+		fileInfo *template.FileInfo
+	)
+
+	if fileInfo, err = template.GetRepositoryFileTemplateInfo(r.db, r.dbLibrary); err != nil {
+		return nil, err
+	}
+
+	return &templateFileBuilder{
+		fileInfo:  fileInfo,
+		buildInfo: r.repositoryTemplateBuildInfo(),
 	}, nil
 }
 
@@ -71,5 +77,5 @@ func (r *RepositoryBuilder) Build() error {
 		return err
 	}
 
-	return repositoryFileBuilder.build(dirPath)
+	return repositoryFileBuilder.fileInfo.Build(repositoryFileBuilder.buildInfo)
 }

@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/domain"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
 var _ Builder = &DomainBuilder{}
@@ -25,15 +25,21 @@ func NewDomainBuilder(projectName string) *DomainBuilder {
 
 func (d *DomainBuilder) newUserFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.DomainUserFileNae,
-		template: domain.UserTemplate,
+		fileInfo: template.GetUserFileTemplateInfo(),
+		buildInfo: &template.BuildInfo{
+			FilePath: filepath.Join(d.projectName, constants.ProjectDomainPkgPath),
+			Data:     nil,
+		},
 	}
 }
 
 func (d *DomainBuilder) newErrorsFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.DomainErrorsFileName,
-		template: domain.ErrorsTemplate,
+		fileInfo: template.GetErrorsFileTemplateInfo(),
+		buildInfo: &template.BuildInfo{
+			FilePath: filepath.Join(d.projectName, constants.ProjectDomainPkgPath),
+			Data:     nil,
+		},
 	}
 }
 
@@ -50,7 +56,7 @@ func (d *DomainBuilder) Build() error {
 	)
 
 	for _, fileBuild := range d.getAllDomainFileBuilder() {
-		if err = fileBuild.build(filepath.Join(d.projectName, constants.ProjectDomainPkgPath)); err != nil {
+		if err = fileBuild.fileInfo.Build(fileBuild.buildInfo); err != nil {
 			return err
 		}
 	}

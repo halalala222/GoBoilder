@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/service"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
 var _ Builder = &ServiceBuilder{}
@@ -25,18 +25,20 @@ func NewServiceBuilder(projectName, modulePath string) *ServiceBuilder {
 	}
 }
 
+func (s *ServiceBuilder) serviceFileBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: filepath.Join(s.projectName, constants.ProjectUserServicePkgPath),
+		Data:     nil,
+	}
+}
+
 func (s *ServiceBuilder) newServiceFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.ServiceFileName,
-		template: service.User,
-		data: &struct {
-			ModulePath string
-		}{
-			ModulePath: s.modulePath,
-		},
+		fileInfo:  template.GetServiceFileTemplateInfo(),
+		buildInfo: s.serviceFileBuildInfo(),
 	}
 }
 
 func (s *ServiceBuilder) Build() error {
-	return s.newServiceFileBuilder().build(filepath.Join(s.projectName, constants.ProjectUserServicePkgPath))
+	return s.newServiceFileBuilder().fileInfo.Build(s.newServiceFileBuilder().buildInfo)
 }

@@ -1,8 +1,7 @@
 package build
 
 import (
-	"github.com/halalala222/GoBoilder/internal/constants"
-	"github.com/halalala222/GoBoilder/internal/template/project"
+	"github.com/halalala222/GoBoilder/internal/template"
 )
 
 var _ Builder = &ProjectBuilder{}
@@ -21,24 +20,45 @@ func NewProjectBuilder(projectName string) *ProjectBuilder {
 	}
 }
 
+func (p *ProjectBuilder) gitIgnoreTemplateBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: p.projectName,
+		Data:     nil,
+	}
+}
+
+func (p *ProjectBuilder) readmeTemplateBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: p.projectName,
+		Data:     nil,
+	}
+}
+
+func (p *ProjectBuilder) makefileTemplateBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: p.projectName,
+		Data:     nil,
+	}
+}
+
 func (p *ProjectBuilder) newGitIgnoreFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.GitIgnoreFileName,
-		template: project.GitIgnoreTemplate,
+		fileInfo:  template.GetGitIgnoreFileInfo(),
+		buildInfo: p.gitIgnoreTemplateBuildInfo(),
 	}
 }
 
 func (p *ProjectBuilder) newREADMEFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.READEMEFileName,
-		template: project.ReadmeTemplate,
+		fileInfo:  template.GetREADMEFileInfo(),
+		buildInfo: p.readmeTemplateBuildInfo(),
 	}
 }
 
 func (p *ProjectBuilder) newMakefileFileBuilder() *templateFileBuilder {
 	return &templateFileBuilder{
-		fileName: constants.MakefileFileName,
-		template: project.MakefileTemplate,
+		fileInfo:  template.GetMakefileFileInfo(),
+		buildInfo: p.makefileTemplateBuildInfo(),
 	}
 }
 
@@ -56,7 +76,7 @@ func (p *ProjectBuilder) Build() error {
 	)
 
 	for _, fileBuild := range p.getAllProjectFileBuilder() {
-		if err = fileBuild.build(p.projectName); err != nil {
+		if err = fileBuild.fileInfo.Build(fileBuild.buildInfo); err != nil {
 			return err
 		}
 	}

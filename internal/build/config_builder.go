@@ -1,9 +1,9 @@
 package build
 
 import (
+	"github.com/halalala222/GoBoilder/internal/template"
 	"path/filepath"
 
-	"github.com/halalala222/GoBoilder/internal/config"
 	"github.com/halalala222/GoBoilder/internal/constants"
 )
 
@@ -33,35 +33,23 @@ func NewConfigBuilder(projectName, modulePath, db, library, configFileType, http
 	}
 }
 
-func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
-	var (
-		err           error
-		dbLibraryInfo *config.DBLibraryInfo
-	)
-
-	if dbLibraryInfo, err = config.GetDBLibraryInfo(c.db, c.library); err != nil {
-		return nil, err
-	}
-
-	return &templateFileBuilder{
-		fileName: dbLibraryInfo.FileName,
-		template: dbLibraryInfo.Template,
-		data: &struct {
+func (c *ConfigBuilder) dbConfigFileBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: filepath.Join(c.projectName, constants.ProjectConfigPkgPath),
+		Data: &struct {
 			ModulePath string
 			DB         string
 		}{
 			ModulePath: c.modulePath,
 			DB:         c.db,
 		},
-	}, nil
+	}
 }
 
-func (c *ConfigBuilder) newConfigBuilder() *templateFileBuilder {
-
-	return &templateFileBuilder{
-		fileName: constants.ConfigFileName,
-		template: config.GetConfigTemplate(),
-		data: &struct {
+func (c *ConfigBuilder) configLoaderFileBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: filepath.Join(c.projectName, constants.ProjectConfigPkgPath),
+		Data: &struct {
 			ConfigFileType string
 			ProjectName    string
 		}{
@@ -71,50 +59,69 @@ func (c *ConfigBuilder) newConfigBuilder() *templateFileBuilder {
 	}
 }
 
-func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
+func (c *ConfigBuilder) httpFrameFileBuildInfo() *template.BuildInfo {
+	return &template.BuildInfo{
+		FilePath: filepath.Join(c.projectName, constants.ProjectConfigPkgPath),
+		Data: &struct {
+			ModulePath string
+		}{
+			ModulePath: c.modulePath,
+		},
+	}
+}
+
+func (c *ConfigBuilder) newDBConfigFileBuilder() (*templateFileBuilder, error) {
 	var (
-		err                error
-		configFileTemplate config.FileTemplate
-		configFileName     string
+		err      error
+		fileInfo *template.FileInfo
 	)
 
-	if configFileTemplate, err = config.GetConfigFileTemplate(c.configFileType); err != nil {
-		return nil, err
-	}
-
-	if configFileName, err = config.GetConfigFileName(c.configFileType); err != nil {
+	if fileInfo, err = template.GetDBLibraryFileTemplateInfo(c.db, c.library); err != nil {
 		return nil, err
 	}
 
 	return &templateFileBuilder{
-		fileName: configFileName,
-		template: configFileTemplate.Build(),
-		data: &struct {
-			DB string
-		}{
-			DB: c.db,
-		},
+		fileInfo:  fileInfo,
+		buildInfo: c.dbConfigFileBuildInfo(),
+	}, nil
+}
+
+func (c *ConfigBuilder) newConfigLoaderFileBuilder() *templateFileBuilder {
+	return &templateFileBuilder{
+		fileInfo:  template.GetConfigLoaderFileTemplateInfo(),
+		buildInfo: c.configLoaderFileBuildInfo(),
+	}
+}
+
+func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
+	var (
+		err      error
+		fileInfo *template.FileInfo
+	)
+
+	if fileInfo, err = template.GetConfigFileTemplateInfo(c.configFileType); err != nil {
+		return nil, err
+	}
+
+	return &templateFileBuilder{
+		fileInfo:  fileInfo,
+		buildInfo: c.configLoaderFileBuildInfo(),
 	}, nil
 }
 
 func (c *ConfigBuilder) getHTTPFrameFilerBuilder() (*templateFileBuilder, error) {
 	var (
-		err           error
-		httpFrameInfo *config.FrameworkInfo
+		err      error
+		fileInfo *template.FileInfo
 	)
 
-	if httpFrameInfo, err = config.GetFrameworkInfo(c.httpFramework); err != nil {
+	if fileInfo, err = template.GetHTTPFrameFileTemplateInfo(c.httpFramework); err != nil {
 		return nil, err
 	}
 
 	return &templateFileBuilder{
-		fileName: httpFrameInfo.FileName,
-		template: httpFrameInfo.Template,
-		data: &struct {
-			ModulePath string
-		}{
-			ModulePath: c.modulePath,
-		},
+		fileInfo:  fileInfo,
+		buildInfo: c.httpFrameFileBuildInfo(),
 	}, nil
 }
 
@@ -123,7 +130,7 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 		allConfigFileBuilder = make([]*templateFileBuilder, 0, 3)
 		dbConfigFileBuilder  *templateFileBuilder
 		httpFrameFileBuilder *templateFileBuilder
-		configBuilder        = c.newConfigBuilder()
+		configLoaderBuilder  = c.newConfigLoaderFileBuilder()
 		configFileBuilder    *templateFileBuilder
 		err                  error
 	)
@@ -142,7 +149,7 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 
 	allConfigFileBuilder = append(allConfigFileBuilder, dbConfigFileBuilder)
 	allConfigFileBuilder = append(allConfigFileBuilder, httpFrameFileBuilder)
-	allConfigFileBuilder = append(allConfigFileBuilder, configBuilder)
+	allConfigFileBuilder = append(allConfigFileBuilder, configLoaderBuilder)
 	allConfigFileBuilder = append(allConfigFileBuilder, configFileBuilder)
 
 	return allConfigFileBuilder, nil
@@ -159,7 +166,7 @@ func (c *ConfigBuilder) Build() error {
 	}
 
 	for _, fileBuild := range fileBuilder {
-		if err = fileBuild.build(filepath.Join(c.projectName, constants.ProjectConfigPkgPath)); err != nil {
+		if err = fileBuild.fileInfo.Build(fileBuild.buildInfo); err != nil {
 			return err
 		}
 	}

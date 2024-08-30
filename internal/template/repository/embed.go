@@ -6,13 +6,13 @@ import _ "embed"
 var GormTemplate []byte
 
 //go:embed mongodb.go.tmpl
-var MongodbTemplate []byte
+var MongoDBTemplate []byte
 
 //go:embed mysql.go.tmpl
-var MysqlTemplate []byte
+var MySQLTemplate []byte
 
 //go:embed postgresql.go.tmpl
-var PostgresqlTemplate []byte
+var PostgreSQLTemplate []byte
 
 //go:embed sqlite.go.tmpl
 var SqliteTemplate []byte
