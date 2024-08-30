@@ -14,7 +14,7 @@ func db2Template() map[string]Template {
 		constants.DataBasePostgreSQL + constants.DatabaseLibraryDatabaseSQL: &PostgreSQLRepositoryTemplate{},
 		constants.DataBaseSQLite + constants.DatabaseLibraryGorm:            &GormRepositoryTemplate{},
 		constants.DataBaseSQLite + constants.DatabaseLibraryDatabaseSQL:     &SQLiteRepositoryTemplate{},
-		constants.DataBaseMongoDB:                                           &MongoDBRepositoryTemplate{},
+		constants.DataBaseMongoDB + constants.DatabaseLibraryMongoDriver:    &MongoDBRepositoryTemplate{},
 	}
 }
 
