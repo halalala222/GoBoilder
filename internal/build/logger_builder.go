@@ -38,7 +38,11 @@ func (l *LoggerBuilder) pkgLoggerTemplateBuildInfo() *template.BuildInfo {
 func (l *LoggerBuilder) internalLoggerTemplateBuildInfo() *template.BuildInfo {
 	return &template.BuildInfo{
 		FilePath: filepath.Join(l.projectName, constants.ProjectInternalPkgLogPath),
-		Data:     nil,
+		Data: &struct {
+			ModulePath string
+		}{
+			ModulePath: l.modulePath,
+		},
 	}
 }
 
