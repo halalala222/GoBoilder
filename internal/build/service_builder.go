@@ -29,7 +29,11 @@ func NewServiceBuilder(projectName, modulePath string) *ServiceBuilder {
 func (s *ServiceBuilder) serviceFileBuildInfo() *template.BuildInfo {
 	return &template.BuildInfo{
 		FilePath: filepath.Join(s.projectName, constants.ProjectUserServicePkgPath),
-		Data:     nil,
+		Data: &struct {
+			ModulePath string
+		}{
+			ModulePath: s.modulePath,
+		},
 	}
 }
 
