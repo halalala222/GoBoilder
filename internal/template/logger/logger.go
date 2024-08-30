@@ -45,3 +45,14 @@ func GetLoggerLibraryFileTemplateInfo(library string) (*template.FileInfo, error
 
 	return loggerTemplateInfo, nil
 }
+
+// GetSupportedLoggerLibraries returns the supported logger libraries.
+func GetSupportedLoggerLibraries() []string {
+	var libraries = make([]string, 0, len(supportedLoggerLibraries))
+
+	for library := range supportedLoggerLibraries {
+		libraries = append(libraries, library)
+	}
+
+	return libraries
+}
