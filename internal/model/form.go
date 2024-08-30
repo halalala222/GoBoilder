@@ -136,13 +136,49 @@ func (m Model) currentModulePathPrefix(buildInfo string) string {
 	return buildInfo
 }
 
+func (m Model) currentDBBuildShow(buildInfo string) string {
+	var (
+		db = m.form.GetString(constants.DBKey)
+	)
+
+	if db != "" {
+		return fmt.Sprintf("%sDB: %s\n", buildInfo, db)
+	}
+
+	return buildInfo
+}
+
+func (m Model) currentDBLibraryBuildShow(buildInfo string) string {
+	var (
+		dbLibrary = m.form.GetString(constants.DBLibraryKey)
+	)
+
+	if dbLibrary != "" {
+		return fmt.Sprintf("%sDB Library: %s\n", buildInfo, dbLibrary)
+	}
+
+	return buildInfo
+}
+
+func (m Model) currentConfigFileTypeBuildShow(buildInfo string) string {
+	var (
+		configFileType = m.form.GetString(constants.ConfigFileTypeKey)
+	)
+
+	if configFileType != "" {
+		return fmt.Sprintf("%sConfig File Type: %s\n", buildInfo, configFileType)
+	}
+
+	return buildInfo
+}
+
 func (m Model) currentLoggerBuildShow(buildInfo string) string {
 	var (
 		logger = m.form.GetString(constants.LoggerKey)
 	)
 
 	if logger != "" {
-		return fmt.Sprintf("%s\nLogger: %s\n", buildInfo, logger)
+		return fmt.Sprintf("%sLogger: %s\n", buildInfo, logger)
 	}
 
 	return buildInfo
@@ -169,6 +205,9 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 
 	buildInfo = m.currentProjectName(buildInfo)
 	buildInfo = m.currentModulePathPrefix(buildInfo)
+	buildInfo = m.currentDBBuildShow(buildInfo)
+	buildInfo = m.currentDBLibraryBuildShow(buildInfo)
+	buildInfo = m.currentConfigFileTypeBuildShow(buildInfo)
 	buildInfo = m.currentLoggerBuildShow(buildInfo)
 	buildInfo = m.currentHTTPFrameBuildShow(buildInfo)
 
@@ -185,14 +224,85 @@ func (m Model) currentBuildShow(modelStyle *Styles, form string) string {
 			jobDescription)
 }
 
+func (m Model) printCompletedProjectName(completedInfo *strings.Builder) {
+	var (
+		projectName = m.form.GetString(constants.ProjectNameKey)
+	)
+
+	if projectName != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Project Name: %s\n", projectName)))
+	}
+}
+
+func (m Model) printCompletedModulePath(completedInfo *strings.Builder) {
+	var (
+		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
+		projectName      = m.form.GetString(constants.ProjectNameKey)
+	)
+
+	if projectName != "" && modulePathPrefix != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Module Path: %s/%s\n", modulePathPrefix, projectName)))
+	}
+
+	if projectName != "" && modulePathPrefix == "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Module Path: %s\n", projectName)))
+	}
+}
+
+func (m Model) printCompletedLogger(completedInfo *strings.Builder) {
+	var (
+		logger = m.form.GetString(constants.LoggerKey)
+	)
+
+	if logger != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Logger: %s\n", logger)))
+	}
+}
+
+func (m Model) printCompletedHTTPFrame(completedInfo *strings.Builder) {
+	var (
+		httpFrame = m.form.GetString(constants.HTTPFrameKey)
+	)
+
+	if httpFrame != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("HTTP Frame: %s\n", httpFrame)))
+	}
+}
+
+func (m Model) printCompletedDB(completedInfo *strings.Builder) {
+	var (
+		db = m.form.GetString(constants.DBKey)
+	)
+
+	if db != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("DB: %s\n", db)))
+	}
+}
+
+func (m Model) printCompletedDBLibrary(completedInfo *strings.Builder) {
+	var (
+		dbLibrary = m.form.GetString(constants.DBLibraryKey)
+	)
+
+	if dbLibrary != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("DB Library: %s\n", dbLibrary)))
+	}
+}
+
+func (m Model) printCompletedConfigFileType(completedInfo *strings.Builder) {
+	var (
+		configFileType = m.form.GetString(constants.ConfigFileTypeKey)
+	)
+
+	if configFileType != "" {
+		completedInfo.Write([]byte(fmt.Sprintf("Config File Type: %s\n", configFileType)))
+	}
+}
+
 func (m Model) completedShow(modelStyle *Styles) string {
 	var (
-		logger           = m.form.GetString(constants.LoggerKey)
-		httpFrame        = m.form.GetString(constants.HTTPFrameKey)
-		projectName      = m.form.GetString(constants.ProjectNameKey)
-		modulePathPrefix = m.form.GetString(constants.ModulePathPrefixKey)
-		completedInfo    strings.Builder
-		errors           = m.form.Errors()
+		completedInfo = &strings.Builder{}
+		errors        = m.form.Errors()
 	)
 
 	if len(errors) > 0 {
@@ -201,21 +311,13 @@ func (m Model) completedShow(modelStyle *Styles) string {
 
 	completedInfo.Write([]byte("You have chosen the following:\n\n"))
 
-	if projectName != "" {
-		completedInfo.Write([]byte(fmt.Sprintf("Project Name: %s\n", projectName)))
-	}
-
-	if modulePathPrefix != "" {
-		completedInfo.Write([]byte(fmt.Sprintf("Module Path Prefix: %s\n", modulePathPrefix)))
-	}
-
-	if logger != "" {
-		completedInfo.Write([]byte(fmt.Sprintf("Logger: %s\n", logger)))
-	}
-
-	if httpFrame != "" {
-		completedInfo.Write([]byte(fmt.Sprintf("HTTP Frame: %s\n", httpFrame)))
-	}
+	m.printCompletedProjectName(completedInfo)
+	m.printCompletedModulePath(completedInfo)
+	m.printCompletedDB(completedInfo)
+	m.printCompletedDBLibrary(completedInfo)
+	m.printCompletedConfigFileType(completedInfo)
+	m.printCompletedLogger(completedInfo)
+	m.printCompletedHTTPFrame(completedInfo)
 
 	return modelStyle.Status.Margin(0, 1).Padding(1, 2).Width(48).Render(completedInfo.String()) + "\n\n"
 }
