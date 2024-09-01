@@ -1,0 +1,73 @@
+package rest
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
+
+	"{{ .ModulePath }}/domain"
+)
+
+type ResponseError struct {
+	Message string `json:"message"`
+}
+
+type UserService interface {
+	GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error)
+}
+
+type UserHandler struct {
+	Service UserService
+}
+
+func NewUserHandler(r chi.Router, svc UserService) {
+	handler := &UserHandler{
+		Service: svc,
+	}
+	r.Get("/users/{id}", handler.GetUserByUserID)
+}
+
+func (a *UserHandler) GetUserByUserID(w http.ResponseWriter, r *http.Request) {
+	userID, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), getStatusCode(err))
+		return
+	}
+
+	ctx := r.Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	user, err := a.Service.GetUserByUserID(ctx, userID)
+	if err != nil {
+		http.Error(w, err.Error(), getStatusCode(err))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func getStatusCode(err error) int {
+	if err == nil {
+		return http.StatusOK
+	}
+
+	switch {
+	case errors.Is(err, domain.ErrInternalServerError):
+		return http.StatusInternalServerError
+	case errors.Is(err, domain.ErrNotFound):
+		return http.StatusNotFound
+	case errors.Is(err, domain.ErrConflict):
+		return http.StatusConflict
+	default:
+		return http.StatusInternalServerError
+	}
+}

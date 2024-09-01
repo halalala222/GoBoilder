@@ -1,0 +1,60 @@
+package rest
+
+import (
+	"context"
+	"strconv"
+
+	"github.com/gofiber/fiber/v2"
+
+	"{{ .ModulePath }}/domain"
+)
+
+type ResponseError struct {
+	Message string `json:"message"`
+}
+
+type UserService interface {
+	GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error)
+}
+
+type UserHandler struct {
+	Service UserService
+}
+
+func NewUserHandler(app *fiber.App, svc UserService) {
+	handler := &UserHandler{
+		Service: svc,
+	}
+	app.Get("/users/:id", handler.GetUserByUserID)
+}
+
+func (a *UserHandler) GetUserByUserID(c *fiber.Ctx) error {
+	userID, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	if err != nil {
+		return c.Status(getStatusCode(err)).JSON(ResponseError{Message: err.Error()})
+	}
+
+	user, err := a.Service.GetUserByUserID(c.Context(), userID)
+	if err != nil {
+		return c.Status(getStatusCode(err)).JSON(ResponseError{Message: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(user)
+}
+
+func getStatusCode(err error) int {
+	if err == nil {
+		return fiber.StatusOK
+	}
+
+	switch {
+	case errors.Is(err, domain.ErrInternalServerError):
+		return fiber.StatusInternalServerError
+	case errors.Is(err, domain.ErrNotFound):
+		return fiber.StatusNotFound
+	case errors.Is(err, domain.ErrConflict):
+		return fiber.StatusConflict
+	default:
+		return fiber.StatusInternalServerError
+	}
+}

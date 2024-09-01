@@ -1,0 +1,68 @@
+package rest
+
+import (
+	"context"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+
+	"{{ .ModulePath }}/domain"
+)
+
+type ResponseError struct {
+	Message string `json:"message"`
+}
+
+type UserService interface {
+	GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error)
+}
+
+type UserHandler struct {
+	Service UserService
+}
+
+func NewUserHandler(r *gin.Engine, svc UserService) {
+	handler := &UserHandler{
+		Service: svc,
+	}
+	r.GET("/users/:id", handler.GetUserByUserID)
+}
+
+func (a *UserHandler) GetUserByUserID(c *gin.Context) {
+	userID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return
+	}
+
+	ctx := c.Request.Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	user, err := a.Service.GetUserByUserID(ctx, userID)
+	if err != nil {
+		c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+func getStatusCode(err error) int {
+	if err == nil {
+		return http.StatusOK
+	}
+
+	switch {
+	case errors.Is(err, domain.ErrInternalServerError):
+		return http.StatusInternalServerError
+	case errors.Is(err, domain.ErrNotFound):
+		return http.StatusNotFound
+	case errors.Is(err, domain.ErrConflict):
+		return http.StatusConflict
+	default:
+		return http.StatusInternalServerError
+	}
+}

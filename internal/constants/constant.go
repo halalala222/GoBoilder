@@ -49,6 +49,7 @@ const (
 	ProjectConfigPkgPath      = "/internal/config"
 	ProjectRepositoryPkgPath  = "/internal/repository"
 	ProjectUserServicePkgPath = "/user"
+	ProjectRestPkgPath        = "/internal/rest"
 
 	ConfigFileTypeKey               = "config_file_type"
 	ChoiceConfigFileTypeTitle       = "Choose your config file type"
@@ -98,4 +99,6 @@ const (
 	TOMLConfigFileName   = "config.toml"
 	ENVConfigFileType    = "env"
 	ENVConfigFileName    = ".env"
+
+	RestUserFileName = "user.go"
 )
