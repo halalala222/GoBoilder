@@ -114,7 +114,7 @@ func (c *ConfigBuilder) getConfigFileBuilder() (*templateFileBuilder, error) {
 	}, nil
 }
 
-func (c *ConfigBuilder) getHTTPFrameFilerBuilder() (*templateFileBuilder, error) {
+func (c *ConfigBuilder) getHTTPFrameFileBuilder() (*templateFileBuilder, error) {
 	var (
 		err      error
 		fileInfo *template.FileInfo
@@ -144,7 +144,7 @@ func (c *ConfigBuilder) getAllConfigFileBuilder() ([]*templateFileBuilder, error
 		return nil, err
 	}
 
-	if httpFrameFileBuilder, err = c.getHTTPFrameFilerBuilder(); err != nil {
+	if httpFrameFileBuilder, err = c.getHTTPFrameFileBuilder(); err != nil {
 		return nil, err
 	}
 
