@@ -9,6 +9,8 @@ import (
     {{else}}
     "github.com/spf13/viper"
     {{end}}
+    "{{.ModulePath}}/internal/log"
+    logger "{{.ModulePath}}/pkg/log"
 )
 
 func LoadConfig(configPath string) {
@@ -26,4 +28,13 @@ func LoadConfig(configPath string) {
 	if err := viper.ReadInConfig(); err != nil {
 		panic(err)
 	}
+}
+
+func LogInit() {
+	{{ if eq .LoggerLibrary "zap" }}
+    log.RegisterLog(logger.NewSlogLogger())
+    {{end}}
+    {{ if eq .LoggerLibrary "slog" }}
+    log.RegisterLog(logger.NewSlogLogger())
+    {{end}}
 }
