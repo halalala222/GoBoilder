@@ -2,10 +2,17 @@ package log
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/natefinch/lumberjack"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+)
+
+const (
+	errorLogFile = "error.log"
+	infoLogFile  = "zap.log"
 )
 
 var _ Logger = &ZapLogger{}
@@ -23,16 +30,12 @@ var (
 	})
 )
 
-func NewZapLogger(logPath *Path, options ...zap.Option) *ZapLogger {
+func NewZapLogger(options ...zap.Option) *ZapLogger {
 	zapCores := make([]zapcore.Core, 0, 4)
 	zapCores = append(zapCores, getConsoleStdOutZapCore())
 	zapCores = append(zapCores, getConsoleStdErrZapCore())
-	if !logPath.checkInfoPathIsEmpty() {
-		zapCores = append(zapCores, getFileInfoCore(logPath.InfoPath))
-	}
-	if !logPath.checkErrorPathIsEmpty() {
-		zapCores = append(zapCores, getFileErrorCore(logPath.ErrorPath))
-	}
+	zapCores = append(zapCores, getFileInfoCore(filepath.Join(viper.GetString("log.path"), infoLogFile)))
+	zapCores = append(zapCores, getFileErrorCore(filepath.Join(viper.GetString("log.path"), errorLogFile)))
 
 	logger := zap.New(
 		zapcore.NewTee(
