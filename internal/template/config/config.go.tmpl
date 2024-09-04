@@ -13,13 +13,26 @@ import (
     logger "{{.ModulePath}}/pkg/log"
 )
 
-func LoadConfig(configPath string) {
+const (
+    {{ if eq .ConfigFileType "env" }}
+    defaultConfigPath = ".env"
+    {{ else if eq .ConfigFileType "yaml" }}
+    defaultConfigPath = "config.yaml"
+    {{ else if eq .ConfigFileType "json" }}
+    defaultConfigPath = "config.json"
+    {{ else if eq .ConfigFileType "toml" }}
+    defaultConfigPath = "config.toml"
+    {{end}}
+
+)
+
+func LoadConfig() {
     {{ if eq .ConfigFileType "env" }}
 	if err := godotenv.Load(configPath); err != nil {
 		panic(err)
 	}
 	{{end}}
-	viper.SetConfigFile(configPath)
+	viper.SetConfigFile(defaultConfigPath)
 	viper.AutomaticEnv()
 	{{ if eq .ConfigFileType "env" }}
 	viper.SetEnvKeyReplacer(strings.NewReplacer(`.`, `_`))
