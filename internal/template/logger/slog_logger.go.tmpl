@@ -3,10 +3,14 @@ package log
 import (
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/natefinch/lumberjack"
+	"github.com/spf13/viper"
 	"golang.org/x/exp/slog"
 )
+
+const slogLogFile = "slog.log"
 
 var _ Logger = &SLogLogger{}
 
@@ -41,14 +45,18 @@ var (
 	}
 )
 
-func NewSlogLogger(path string) *SLogLogger {
-	var handler = getDevHandler(path)
-	if os.Getenv("APP_ENV") == "prod" {
-		handler = getProdHandler(path)
+func NewSlogLogger() *SLogLogger {
+	var (
+		logFilePath = filepath.Join(viper.GetString("log.path"), slogLogFile)
+		handler     = getDevHandler(logFilePath)
+	)
+
+	if viper.GetString("app.env") == "prod" {
+		handler = getProdHandler(logFilePath)
 	}
-	slogLogger := slog.New(handler)
+
 	return &SLogLogger{
-		logger: slogLogger,
+		logger: slog.New(handler),
 	}
 }
 
