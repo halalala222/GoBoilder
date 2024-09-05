@@ -7,6 +7,8 @@ import (
 	"{{.ModulePath}}/internal/rest"
 )
 
+var _ rest.UserService = &Service{}
+
 //go:generate mockery --name UserRepository
 type Repository interface {
 	GetUserByUserID(ctx context.Context, userID int64) (*domain.User, error)
