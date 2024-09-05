@@ -45,7 +45,7 @@ func LoadConfig() {
 
 func LogInit() {
 	{{ if eq .LoggerLibrary "zap" }}
-    log.RegisterLog(logger.NewSlogLogger())
+    log.RegisterLog(logger.NewZapLogger())
     {{end}}
     {{ if eq .LoggerLibrary "slog" }}
     log.RegisterLog(logger.NewSlogLogger())
