@@ -50,6 +50,7 @@ const (
 	ProjectRepositoryPkgPath  = "/internal/repository"
 	ProjectUserServicePkgPath = "/user"
 	ProjectRestPkgPath        = "/internal/rest"
+	ProjectCmdPkgPath         = "/cmd"
 
 	ConfigFileTypeKey               = "config_file_type"
 	ChoiceConfigFileTypeTitle       = "Choose your config file type"
@@ -75,6 +76,7 @@ const (
 	HTTPFrameEchoFileName               = "echo.go"
 	HTTPFrameFiberFileName              = "fiber.go"
 	HTTPFrameGinFileName                = "gin.go"
+	CmdAppFileName                      = "app.go"
 
 	DatabaseLibraryGorm        = "gorm"
 	DatabaseLibraryMongoDriver = "mongo-driver"

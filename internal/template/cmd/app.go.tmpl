@@ -1,0 +1,86 @@
+package main
+
+import (
+    {{ if eq .DBLibrary "gorm" }}
+    "context"
+    {{ end }}
+    "net/http"
+
+    "github.com/spf13/viper"
+
+    "{{ .ModulePath }}/internal/config"
+    "{{ .ModulePath }}/internal/log"
+    "{{ .ModulePath }}/internal/repository/{{ .DB }}"
+    "{{ .ModulePath }}/internal/rest"
+    logger "{{ .ModulePath }}/pkg/log"
+    "{{ .ModulePath }}/user"
+)
+
+func appInit() {
+    {{ if eq .DBLibrary "gorm" }}
+    ctx := context.Background()
+    db := config.DB(ctx)
+    {{ else }}
+    db := config.DB()
+    {{ end }}
+	userRepository := {{ .DB }}.NewUserRepository(db)
+	userService := user.NewService(userRepository)
+	{{ if eq .HTTPFramework "chi" }}
+	router := config.NewChiRouter()
+	rest.NewUserHandler(router, userService)
+	httpServer := &http.Server{
+	    Addr:    ":" + viper.GetString("server.port"),
+	    Handler: router,
+    }
+    go func() {
+        if err := httpServer.ListenAndServe(); err != nil {
+            log.Log().Error("Server ListenAndServe", logger.Field{Key: "err", Value: err})
+            panic(err)
+        }
+    }()
+    config.CloseServer(httpServer)
+    {{ else if eq .HTTPFramework "echo" }}
+    server := config.NewEchoServer()
+    rest.NewUserHandler(server, userService)
+    go func() {
+        if err := server.Start(":" + viper.GetString("server.port")); err != nil {
+            log.Log().Error("Server ListenAndServe", logger.Field{Key: "err", Value: err})
+            panic(err)
+        }
+    }()
+    config.CloseServer(server)
+    {{ else if eq .HTTPFramework "fiber" }}
+    app := config.NewFiberApp()
+    rest.NewUserHandler(app, userService)
+    go func() {
+        if err := app.Listen(":" + viper.GetString("server.port")); err != nil {
+            log.Log().Error("Server ListenAndServe", logger.Field{Key: "err", Value: err})
+            panic(err)
+        }
+    }()
+    config.CloseServer(app)
+    {{ else if eq .HTTPFramework "gin" }}
+    engine := config.NewGinEngine()
+    rest.NewUserHandler(engine, userService)
+    httpServer := &http.Server{
+        Addr:    ":" + viper.GetString("server.port"),
+        Handler: engine,
+    }
+    go func() {
+        if err := httpServer.ListenAndServe(); err != nil {
+            log.Log().Error("Server ListenAndServe", logger.Field{Key: "err", Value: err})
+            panic(err)
+        }
+    }()
+    config.CloseServer(httpServer)
+    {{ end }}
+    log.Log().Debug("server run on debug mode")
+
+    config.CloseDB()
+}
+
+func main() {
+	config.LoadConfig()
+	config.LogInit()
+	appInit()
+}

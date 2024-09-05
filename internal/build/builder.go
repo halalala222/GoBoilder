@@ -21,10 +21,11 @@ func GenerateAllBuilder(options ...Option) []Builder {
 		NewProjectBuilder(opts.projectName),
 		NewLoggerBuilder(opts.projectName, opts.loggerLibrary, opts.modulePath),
 		NewDomainBuilder(opts.projectName),
-		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary, opts.configFileType, opts.httpFramework),
+		NewConfigBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary, opts.configFileType, opts.httpFramework, opts.loggerLibrary),
 		NewRepositoryBuilder(opts.projectName, opts.modulePath, opts.db, opts.dbLibrary),
 		NewServiceBuilder(opts.projectName, opts.modulePath),
 		NewRestBuilder(opts.projectName, opts.modulePath, opts.httpFramework),
+		NewAppBuilder(opts.projectName, opts.modulePath, opts.httpFramework, opts.db, opts.dbLibrary),
 	}
 }
 
@@ -37,6 +38,7 @@ func getAllDir(projectName string) []string {
 		filepath.Join(projectName, constants.ProjectRepositoryPkgPath),
 		filepath.Join(projectName, constants.ProjectUserServicePkgPath),
 		filepath.Join(projectName, constants.ProjectRestPkgPath),
+		filepath.Join(projectName, constants.ProjectCmdPkgPath),
 	}
 }
 
