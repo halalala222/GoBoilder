@@ -17,6 +17,7 @@ type ConfigBuilder struct {
 	modulePath     string
 	db             string
 	library        string
+	loggerLibrary  string
 	configFileType string
 	httpFramework  string
 }
@@ -25,7 +26,7 @@ func (c *ConfigBuilder) String() string {
 	return "ConfigBuilder"
 }
 
-func NewConfigBuilder(projectName, modulePath, db, library, configFileType, httpFramework string) *ConfigBuilder {
+func NewConfigBuilder(projectName, modulePath, db, library, configFileType, httpFramework, loggerLibrary string) *ConfigBuilder {
 	return &ConfigBuilder{
 		projectName:    projectName,
 		modulePath:     modulePath,
@@ -33,6 +34,7 @@ func NewConfigBuilder(projectName, modulePath, db, library, configFileType, http
 		library:        library,
 		configFileType: configFileType,
 		httpFramework:  httpFramework,
+		loggerLibrary:  loggerLibrary,
 	}
 }
 
@@ -53,13 +55,17 @@ func (c *ConfigBuilder) configLoaderFileBuildInfo() *template.BuildInfo {
 	return &template.BuildInfo{
 		FilePath: filepath.Join(c.projectName, constants.ProjectConfigPkgPath),
 		Data: &struct {
+			ModulePath     string
 			ConfigFileType string
 			ProjectName    string
 			DB             string
+			LoggerLibrary  string
 		}{
+			ModulePath:     c.modulePath,
 			ConfigFileType: c.configFileType,
 			ProjectName:    c.projectName,
 			DB:             c.db,
+			LoggerLibrary:  c.loggerLibrary,
 		},
 	}
 }
