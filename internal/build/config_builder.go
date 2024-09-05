@@ -1,13 +1,14 @@
 package build
 
 import (
+	"path/filepath"
+	"strings"
+
+	"github.com/halalala222/GoBoilder/internal/constants"
 	"github.com/halalala222/GoBoilder/internal/template"
 	"github.com/halalala222/GoBoilder/internal/template/config"
 	"github.com/halalala222/GoBoilder/internal/template/config/db"
 	"github.com/halalala222/GoBoilder/internal/template/config/http"
-	"path/filepath"
-
-	"github.com/halalala222/GoBoilder/internal/constants"
 )
 
 var _ Builder = &ConfigBuilder{}
@@ -46,7 +47,7 @@ func (c *ConfigBuilder) dbConfigFileBuildInfo() *template.BuildInfo {
 			DB         string
 		}{
 			ModulePath: c.modulePath,
-			DB:         c.db,
+			DB:         strings.ToLower(c.db),
 		},
 	}
 }
