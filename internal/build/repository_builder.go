@@ -41,8 +41,10 @@ func (r *RepositoryBuilder) repositoryTemplateBuildInfo() *template.BuildInfo {
 		FilePath: r.getRepositoryDir(),
 		Data: &struct {
 			ModulePath string
+			DB         string
 		}{
 			ModulePath: r.modulePath,
+			DB:         strings.ToLower(r.db),
 		},
 	}
 }
