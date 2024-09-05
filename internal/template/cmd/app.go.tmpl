@@ -4,7 +4,11 @@ import (
     {{ if eq .DBLibrary "gorm" }}
     "context"
     {{ end }}
+    {{ if eq .HTTPFramework "chi" }}
     "net/http"
+    {{ else if eq .HTTPFramework "gin" }}
+    "net/http"
+    {{ end }}
 
     "github.com/spf13/viper"
 
