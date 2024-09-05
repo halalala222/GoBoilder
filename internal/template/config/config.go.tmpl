@@ -15,13 +15,13 @@ import (
 
 const (
     {{ if eq .ConfigFileType "env" }}
-    defaultConfigPath = ".env"
+    defaultConfigPath = "./internal/config/.env"
     {{ else if eq .ConfigFileType "yaml" }}
-    defaultConfigPath = "config.yaml"
+    defaultConfigPath = "./internal/config/config.yaml"
     {{ else if eq .ConfigFileType "json" }}
-    defaultConfigPath = "config.json"
+    defaultConfigPath = "./internal/config/config.json"
     {{ else if eq .ConfigFileType "toml" }}
-    defaultConfigPath = "config.toml"
+    defaultConfigPath = "./internal/config/config.toml"
     {{end}}
 
 )
