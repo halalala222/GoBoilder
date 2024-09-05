@@ -7,11 +7,11 @@ import (
 
 var supportedLoggerLibraries = map[string]*template.FileInfo{
 	constants.ZapLoggerLibrary: {
-		Template: slogLoggerTemplate,
+		Template: zapLoggerTemplate,
 		FileName: constants.ZapLoggerFileName,
 	},
 	constants.SlogLoggerLibrary: {
-		Template: zapLoggerTemplate,
+		Template: slogLoggerTemplate,
 		FileName: constants.SlogLoggerFileName,
 	},
 }
