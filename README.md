@@ -53,6 +53,8 @@
 - [ ] Improve the README.md
 - [ ] Add Integration Test
 - [ ] Add Dockerfile & docker-compose.yml
+- [ ] Add test-container for database testing
+- [ ] Add Generate repository & usecase mock
 
 ## Usage Example
 <p align="center">
