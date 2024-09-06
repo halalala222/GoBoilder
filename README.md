@@ -48,6 +48,12 @@
 - [x] [Zap](https://github.com/uber-go/zap)
 - [x] [Slog](https://pkg.go.dev/log/slog)
 
+## TODO
+- [ ] Improve the Makefile
+- [ ] Improve the README.md
+- [ ] Add Integration Test
+- [ ] Add Dockerfile & docker-compose.yml
+
 ## Usage Example
 <p align="center">
   <img src="./assets/home.png" alt="Advanced Options" width="800"/>
