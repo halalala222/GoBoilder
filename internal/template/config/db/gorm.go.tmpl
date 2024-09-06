@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	{{ if eq .DB "mysql" }}"fmt" {{ else if eq .DB "postgresql" }}"fmt" {{ end }}
 	"io"
 	"log"
 	"os"
@@ -9,7 +10,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-    {{ if eq .DB "MySQL" }}_ "gorm.io/driver/mysql" {{else if eq .DB "PostgreSQL" }}_ "gorm.io/driver/postgres"{{ else if eq .DB "SQLite" }}_ "gorm.io/driver/sqlite"{{ end }}
+    {{ if eq .DB "mysql" }}"gorm.io/driver/mysql" {{else if eq .DB "postgresql" }}"gorm.io/driver/postgres"{{ else if eq .DB "sqlite" }}"gorm.io/driver/sqlite"{{ end }}
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -29,14 +30,24 @@ var (
 {{ if eq .DB "mysql" }}
 func getGormDialector() gorm.Dialector {
 	return mysql.New(mysql.Config{
-		DSN: fmt.Sprintf(viper.GetString("mysql.incu.dsn"), viper.GetString("INCU_PASSWORD")),
+		DSN: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+            viper.GetString("db.username"),
+            viper.GetString("db.password"),
+            viper.GetString("db.host"),
+            viper.GetInt("db.port"),
+            viper.GetString("db.database"),
+        ),
 	})
 }
 {{ else if eq .DB "postgres" }}
 func getGormDialector() gorm.Dialector {
-    return postgres.New(postgres.Config{
-        DSN: fmt.Sprintf(viper.GetString("postgres.incu.dsn"), viper.GetString("INCU_PASSWORD")),
-    })
+	return postgres.Open(fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		viper.GetString("postgres.host"),
+		viper.GetString("postgres.user"),
+		viper.GetString("postgres.password"),
+		viper.GetString("postgres.dbname"),
+		viper.GetString("postgres.port"),
+	))
 }
 {{ else if eq .DB "sqlite" }}
 func getGormDialector() gorm.Dialector {
