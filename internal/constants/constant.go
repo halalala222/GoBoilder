@@ -51,6 +51,7 @@ const (
 	ProjectUserServicePkgPath = "/user"
 	ProjectRestPkgPath        = "/internal/rest"
 	ProjectCmdPkgPath         = "/cmd"
+	ProjectLogsPath           = "/logs"
 
 	ConfigFileTypeKey               = "config_file_type"
 	ChoiceConfigFileTypeTitle       = "Choose your config file type"

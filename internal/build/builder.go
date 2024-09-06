@@ -39,6 +39,7 @@ func getAllDir(projectName string) []string {
 		filepath.Join(projectName, constants.ProjectUserServicePkgPath),
 		filepath.Join(projectName, constants.ProjectRestPkgPath),
 		filepath.Join(projectName, constants.ProjectCmdPkgPath),
+		filepath.Join(projectName, constants.ProjectLogsPath),
 	}
 }
 
